@@ -48,7 +48,11 @@ class MsgTime < String
   end
 
   def minute
-    @minute ||= minute_match[0].chomp[-2..-1].to_i || 0
+    @minute ||= (minute_match && minute_match[0].chomp[-2..-1].to_i) || 0
+  end
+
+  def printable
+    @printable ||= "#{sprintf('%02d', hour)}:#{sprintf('%02d', minute)} #{meridian}"
   end
 
 end
