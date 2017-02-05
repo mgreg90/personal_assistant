@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+# For turning numbers to text
+gem 'humanize'
+
 # For handling keys
 gem 'dotenv-rails', :require => 'dotenv/rails-now'
 

@@ -82,6 +82,7 @@ GEM
       activesupport (>= 4.1.0)
     hashie (3.4.6)
     hitimes (1.2.4)
+    humanize (1.2.4)
     i18n (0.7.0)
     json (2.0.2)
     listen (3.0.8)
@@ -190,6 +191,7 @@ DEPENDENCIES
   celluloid-io
   chronic
   dotenv-rails
+  humanize
   listen (~> 3.0.5)
   pg (~> 0.18)
   pry-nav
@@ -203,4 +205,4 @@ DEPENDENCIES
   tzinfo-data
 
 BUNDLED WITH
-   1.13.6
+   1.13.7

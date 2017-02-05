@@ -12,6 +12,7 @@ require "action_cable/engine"
 # require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -27,8 +28,12 @@ module PersonalAssistant
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    config.autoload_paths += %W(#{config.root}/lib)
+
     config.console do |c|
       require 'awesome_print'
     end
   end
 end
+
+require "ext/regexp"
