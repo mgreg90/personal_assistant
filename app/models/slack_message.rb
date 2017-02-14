@@ -14,7 +14,7 @@ class SlackMessage < ApplicationRecord
   end
 
   def time
-    @time ||= MsgTime.new(body.stripped).strip
+    @time ||= MsgTime.new(body.stripped)
   end
 
   def date
