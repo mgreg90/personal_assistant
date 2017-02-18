@@ -15,6 +15,10 @@ class Reminder < ApplicationRecord
     reminder
   end
 
+  def self.next_occurrence
+    where("occurrence >= ?", DateTime.now).order("occurrence ASC").limit(1).first
+  end
+
   def next_occurrence
     occurrence
   end
