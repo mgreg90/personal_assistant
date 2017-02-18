@@ -18,7 +18,13 @@ class SlackMessage < ApplicationRecord
   end
 
   def date
-    @date ||= MsgDate.new(body.stripped(msg_time: time, type_regex: message_type[:regex])).strip
+    @date ||= begin
+      if time.type == :relative
+        MsgDate.new(body.stripped(type_regex: message_type[:regex]), @time)
+      else
+        MsgDate.new(body.stripped(msg_time: time, type_regex: message_type[:regex]))
+      end
+    end
   end
 
   def reminder

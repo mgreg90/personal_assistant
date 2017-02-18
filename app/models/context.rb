@@ -1,19 +1,14 @@
 class Context < ApplicationRecord
 
   belongs_to :user, optional: true
+  belongs_to :reminder, optional: true
 
-  has_many :reminders
-  has_many :slack_messages
+  has_many :slack_messages, dependent: :destroy
 
-  def self.current_or_new(user, message=nil)
-    if user.context
-      user.context
-    else
-      create!(
-        user: user,
-        slack_messages: [message]
-      )
-    end
+  CONTEXT_END_TIMEOUT = 10.minutes
+
+  def before_timeout?
+    reminder.blank? && updated_at > CONTEXT_END_TIMEOUT
   end
 
 end

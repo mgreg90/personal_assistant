@@ -10,18 +10,12 @@ class Bot < SlackRubyBot::Bot
       body: data['text'],
       message_type: 'r'
     )
-    current_context = Context.current_or_new(current_user, slack_message)
-    binding.pry
-    # current_context  =  if current_user.context
-    #                       current_user.context
-    #                     else
-    #                       Context.create!(
-    #                         item_type: :reminder,
-    #                         user: current_user,
-    #                         slack_messages: [slack_message]
-    #                       )
-    #                     end
-    #
+    current_context = current_user.current_or_new_context#.current_or_new(current_user, slack_message)
+
+    current_user.context = current_context
+    reminder = Reminder.build_from_slack_message(slack_message, current_context)
+    current_user.reminders << reminder
+    current_context.slack_messages << slack_message
     client.say(channel: data.channel, text: "you got it!")
   end
 

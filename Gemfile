@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+ruby '2.4.0'
 # For turning numbers to text
 gem 'humanize'
 
@@ -39,10 +39,6 @@ group :development, :test do
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
-
-  # For debugging
-  gem 'pry-rails'
-  gem 'pry-nav'
 
   gem 'awesome_print', require:"ap"
 

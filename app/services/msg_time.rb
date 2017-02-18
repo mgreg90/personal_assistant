@@ -16,7 +16,7 @@ class MsgTime
     hours: {limit: (365*24), regex: /(hr(s)?|(hour)(s)?)/i}
   }
   TIME_INDICATOR_REGEXS = {
-    target: /(at|@)\s(#{VALID_HOURS.join('|')})(:(#{VALID_MINUTES.join('|')}){2})?(\s?)(#{MsgTime::INSERTABLE_MERIDIAN_REGEXS.join('|')})?/i.freeze,
+    absolute: /(at|@)\s(#{VALID_HOURS.join('|')})(:(#{VALID_MINUTES.join('|')}){2})?(\s?)(#{MsgTime::INSERTABLE_MERIDIAN_REGEXS.join('|')})?/i.freeze,
     relative: /in\s((\d)+|an|a)\s(sec(ond)?(s)?|min(ute)?(s)?|hr(s)?|hour(s)?)/i
   }.freeze
 
@@ -61,8 +61,12 @@ class MsgTime
 
   def unit
     @unit ||= TIME_UNITS.map do |k, v|
-      k if v[:regex].match(target)
+      k if v[:regex].match(absolute)
     end.compact.first
+  end
+
+  def relative
+    @relative ||= created_at + quantity.send("#{unit}")
   end
 
   private
@@ -79,12 +83,8 @@ class MsgTime
     @quantity ||= quantity_matches.keys.first
   end
 
-  def target
-    @target ||= text.gsub(/in(\s)/i, '')
-  end
-
-  def time_relative
-    @time_relative ||= created_at + quantity.send("#{unit}")
+  def absolute
+    @absolute ||= text.gsub(/in(\s)/i, '')
   end
 
   def meridian_matches
@@ -95,7 +95,7 @@ class MsgTime
     end
   end
 
-  def meridian_target
+  def meridian_absolute
     if meridian_matches.length > 1
       raise InvalidMsgTime, "More than one meridian"
     elsif meridian_matches.length == 0
@@ -112,7 +112,7 @@ class MsgTime
     @hour_match ||= text.match(/(#{VALID_HOURS.join('|')})/i)
   end
 
-  def hour_target
+  def hour_absolute
     hour_match[0].to_i
   end
 
@@ -124,7 +124,7 @@ class MsgTime
     @minute_match ||= text.match(MINUTE_REGEX)
   end
 
-  def minute_target
+  def minute_absolute
     (minute_match && minute_match[0].chomp[-2..-1].to_i) || 0
   end
 

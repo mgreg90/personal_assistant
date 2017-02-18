@@ -15,4 +15,12 @@ class User < ApplicationRecord
     end
   end
 
+  def current_or_new_context
+    if context && context.before_timeout?
+      context
+    else
+      self.context = Context.new
+    end
+  end
+
 end
