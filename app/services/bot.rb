@@ -1,14 +1,18 @@
 class Bot < SlackRubyBot::Bot
 
+  TEST_RESPONSE = "Alive and well!"
+
   command 'test' do |client, data|
-    client.say(channel: data.channel, text: "alive and well!")
+    client.say(channel: data.channel, text: TEST_RESPONSE)
   end
 
   scan SlackMessage::MESSAGE_TYPE_MAP['r'][:regex] do |client, data, match|
+
     current_user = User.create_or_find(data.team, data.user)
     slack_message = SlackMessage.new(
       body: data['text'],
-      message_type: 'r'
+      message_type: 'r',
+      channel: data.channel
     )
     current_context = current_user.current_or_new_context
 
@@ -17,13 +21,16 @@ class Bot < SlackRubyBot::Bot
     current_user.reminders << reminder
     current_context.slack_messages << slack_message
     SendReminderJob.set(wait_until: reminder.next_occurrence)
-      .perform_later(reminder: reminder, channel: data.channel)
+      .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
+
+
+    # response_client.chat_postMessage(ReminderPresenter.new(reminder, channel: data.channel).to_h)
 
     client.say(channel: data.channel, text: "you got it!")
   end
 
-  def self.send_reminder(client, reminder)
-    client.say(channel: "C2W46HWJ2", text: reminder.message)
+  def self.smart_client
+    @smart_client ||= Slack::Web::Client.new
   end
 
 end

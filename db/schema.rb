@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 20161203041122) do
   create_table "slack_messages", force: :cascade do |t|
     t.string   "body"
     t.string   "message_type"
+    t.string   "channel"
     t.integer  "context_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
