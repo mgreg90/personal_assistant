@@ -10,7 +10,11 @@ class Reminder < ApplicationRecord
     reminder = new(message: message.reminder, status: "A", context: context)
     if message.date.recurring?
     else
-      reminder.occurrence = message.time.relative
+      reminder.occurrence = if message.time.relative?
+        message.time.relative
+      elsif message.time.absolute?
+        message.time.absolute
+      end
     end
     reminder
   end

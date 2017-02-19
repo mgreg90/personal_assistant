@@ -4,6 +4,7 @@ class MsgTime
   class IncompleteMsgTime < StandardError; end
 
   MERIDIAN_MAP = {am: /a(.?)m(.?)/i, pm: /p(.?)m(.?)/i}.freeze
+  MERIDIAN_HOUR_OFFSET_MAP = {am: 0, pm: 12}
   INSERTABLE_MERIDIAN_REGEXS = MERIDIAN_MAP.values.map(&:insertable)
   NUMERICAL_HOURS = (1..12).map{ |nh| nh.to_s.length == 2 ? nh.to_s : [nh.to_s, "0#{nh}"]}
   TEXT_HOURS = (1..12).map(&:humanize)
@@ -47,12 +48,24 @@ class MsgTime
      end.compact.first
   end
 
+  def relative?
+    type == :relative
+  end
+
+  def absolute?
+    type == :absolute
+  end
+
   def meridian
     @meridian ||= send("meridian_#{type}")
   end
 
-  def hour
-    @hour ||= send("hour_#{type}")
+  def hour(options={type: 12})
+    if options[:type] = 12
+      @hour ||= send("hour_#{type}")
+    elsif options[:type] = 24
+        @hour_24 ||= hour - MERIDIAN_HOUR_OFFSET_MAP[meridian.downcase.to_sym]
+    end
   end
 
   def minute
@@ -61,12 +74,17 @@ class MsgTime
 
   def unit
     @unit ||= TIME_UNITS.map do |k, v|
-      k if v[:regex].match(absolute)
+      k if v[:regex].match(absolute_text)
     end.compact.first
   end
 
   def relative
     @relative ||= created_at + quantity.send("#{unit}")
+  end
+
+  def absolute(date=nil)
+    date ||= Date.today
+    DateTime.new(date.year, date.month, date.day, (hour == 12 ? 0 : hour), minute, 0, Time.now.strftime("%z"))
   end
 
   private
@@ -83,8 +101,8 @@ class MsgTime
     @quantity ||= quantity_matches.keys.first
   end
 
-  def absolute
-    @absolute ||= text.gsub(/in(\s)/i, '')
+  def absolute_text
+    @absolute_text ||= text.gsub(/in(\s)/i, '')
   end
 
   def meridian_matches
