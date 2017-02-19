@@ -25,13 +25,17 @@ class ReminderPresenter
       attachments: [
         {
           color: "#36a64f",
-          text: "Reminder: #{reminder.message.capitalize}"\
+          text: "Reminder: #{clean_reminder}"\
             "\nTime: #{reminder.next_occurrence.localtime.format_us}",
           footer: "Vera",
           ts: Time.now.to_i.to_s
         }
       ]
     }
+  end
+
+  def clean_reminder
+    reminder.message.gsub(/my/i, 'your').capitalize
   end
 
 end
