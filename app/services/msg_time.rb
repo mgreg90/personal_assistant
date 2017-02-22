@@ -61,10 +61,10 @@ class MsgTime
   end
 
   def hour(options={type: 12})
-    if options[:type] = 12
+    if options[:type] == 12
       @hour ||= send("hour_#{type}")
-    elsif options[:type] = 24
-        @hour_24 ||= hour - MERIDIAN_HOUR_OFFSET_MAP[meridian.downcase.to_sym]
+    elsif options[:type] == 24
+        @hour_24 ||= hour + MERIDIAN_HOUR_OFFSET_MAP[meridian.downcase.to_sym]
     end
   end
 
@@ -84,7 +84,7 @@ class MsgTime
 
   def absolute(date=nil)
     date ||= Date.today
-    DateTime.new(date.year, date.month, date.day, (hour == 12 ? 0 : hour), minute, 0, Time.now.strftime("%z"))
+    DateTime.new(date.year, date.month, date.day, hour(type: 24), minute, 0, Time.now.strftime("%z"))
   end
 
   private
@@ -123,7 +123,7 @@ class MsgTime
   end
 
   def meridian_relative
-    time_relative.strftime("%P")
+    relative.strftime("%P")
   end
 
   def hour_match
@@ -135,7 +135,7 @@ class MsgTime
   end
 
   def hour_relative
-    time_relative.hour
+    relative.hour
   end
 
   def minute_match
@@ -147,7 +147,7 @@ class MsgTime
   end
 
   def minute_relative
-    time_relative.min
+    relative.min
   end
 
 end
