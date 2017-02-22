@@ -23,9 +23,6 @@ class Bot < SlackRubyBot::Bot
     SendReminderJob.set(wait_until: reminder.next_occurrence)
       .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
 
-
-    # response_client.chat_postMessage(ReminderPresenter.new(reminder, channel: data.channel).to_h)
-
     client.say(channel: data.channel, text: "you got it!")
   end
 

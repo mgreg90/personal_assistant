@@ -42,6 +42,13 @@ group :development, :test do
 
   gem 'awesome_print', require:"ap"
 
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'timecop'
+end
+
+group :test do
+  gem 'database_cleaner'
 end
 
 group :development do
