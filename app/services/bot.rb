@@ -20,11 +20,10 @@ class Bot < SlackRubyBot::Bot
     reminder = Reminder.build_from_slack_message(slack_message, current_context)
     current_user.reminders << reminder
     current_context.slack_messages << slack_message
+    byebug
     SendReminderJob.set(wait_until: reminder.next_occurrence)
       .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
-
-
-    # response_client.chat_postMessage(ReminderPresenter.new(reminder, channel: data.channel).to_h)
+    byebug
 
     client.say(channel: data.channel, text: "you got it!")
   end
