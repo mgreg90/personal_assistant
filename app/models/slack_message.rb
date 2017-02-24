@@ -6,7 +6,7 @@ class SlackMessage < ApplicationRecord
   belongs_to :user, optional: true
 
   MESSAGE_TYPE_MAP = {
-    'r' => {class: Reminder, regex: /remind me (to|about) /i}
+    'r' => {class: Reminder, regex: /remind me (to|about|that) /i}
   }.freeze
 
   def body

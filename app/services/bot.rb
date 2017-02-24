@@ -7,12 +7,11 @@ class Bot < SlackRubyBot::Bot
   end
 
   scan SlackMessage::MESSAGE_TYPE_MAP['r'][:regex] do |client, data, match|
-
     current_user = User.create_or_find(data.team, data.user)
     slack_message = SlackMessage.new(
-      body: data['text'],
-      message_type: 'r',
-      channel: data.channel
+      body:           data['text'],
+      message_type:   'r',
+      channel:        data.channel
     )
     current_context = current_user.current_or_new_context
 
@@ -20,11 +19,13 @@ class Bot < SlackRubyBot::Bot
     reminder = Reminder.build_from_slack_message(slack_message, current_context)
     current_user.reminders << reminder
     current_context.slack_messages << slack_message
-    byebug
     SendReminderJob.set(wait_until: reminder.next_occurrence)
       .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
 
     client.say(channel: data.channel, text: "you got it!")
+  end
+
+  command 'ping' do |_, _, _|
   end
 
   def self.smart_client

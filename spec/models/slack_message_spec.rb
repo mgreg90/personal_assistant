@@ -141,7 +141,6 @@ describe SlackMessage do
           expect(slack_message.time.hour(type: 24)).to eq(14)
         end
         it "parses the date" do
-          byebug
           expect(slack_message.date.to_date).to eq(Date.today)
         end
         it "parses the reminder" do
