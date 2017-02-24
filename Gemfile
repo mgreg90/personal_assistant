@@ -35,6 +35,9 @@ gem 'rails-erd'
 gem 'slack-ruby-bot'
 gem 'celluloid-io'
 
+# For parsing dates and times from text
+gem 'gregorian', git: 'git://github.com/mgreg90/gregorian.git'
+
 group :development, :test do
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

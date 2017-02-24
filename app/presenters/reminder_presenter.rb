@@ -2,13 +2,12 @@ class ReminderPresenter
 
   DEFAULT_REMINDER_RESPONSE = "You've got a reminder!"
 
-  attr_reader :reminder, :text, :channel, :type
+  attr_reader :reminder, :text, :channel
 
   def initialize(reminder, options={})
     @reminder = reminder
     @text = options[:text] || DEFAULT_REMINDER_RESPONSE
     @channel = options[:channel]
-    @type = options[:type]
   end
 
   def to_h
@@ -36,12 +35,7 @@ class ReminderPresenter
   end
 
   def time
-    # byebug
-    if slack?
-
-    else
-      reminder.next_occurrence.localtime.format_us
-    end
+    reminder.next_occurrence.localtime.format_us
   end
 
   def clean_reminder

@@ -148,6 +148,28 @@ describe SlackMessage do
         end
       end
 
+      context "simple reminder, absolute time, tomorrow, before time" do
+        before(:each) do
+          @now = (DateTime.now).localtime.beginning_of_day
+          @target = @now + 1.days + 14.hours + 45.minutes
+        end
+        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} at 2:45 pm tomorrow")}
+        let(:slack_message) { SlackMessage.new(reminder) }
+
+        it "parses time" do
+          expect(slack_message.time.text).to eq "at 2:45 pm"
+          expect(slack_message.time.absolute).to eq(@target)
+          expect(slack_message.time.minute).to eq(45)
+          expect(slack_message.time.hour(type: 24)).to eq(14)
+        end
+        it "parses the date" do
+          expect(slack_message.date.to_date).to eq(Date.today)
+        end
+        it "parses the reminder" do
+          expect(slack_message.reminder).to eq(reminder_text)
+        end
+      end
+
 
     end
   end

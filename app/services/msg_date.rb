@@ -1,5 +1,5 @@
 class MsgDate
-  
+
   RECURRING_DATE_INDICATORS = ['every'].push(*(Date::DAYNAMES.dup.map{|d| d + 's'}))
   RECURRING_DATE_REGEX = /(#{RECURRING_DATE_INDICATORS.join('|')})(\s?)/i.freeze
   STATIC_DATE_INDICATORS = Date::DAYNAMES.dup.push('today', 'tomorrow', *(Date::MONTHNAMES.dup.compact.push(*Date::ABBR_MONTHNAMES.compact).map{|m| "on #{m}"}))
@@ -31,6 +31,8 @@ class MsgDate
   def to_date
     @to_date ||= if time
                    time.relative.to_date
+                 else
+                   Date.today
                  end
   end
 

@@ -35,7 +35,7 @@ class MsgTime
   def stringify(string)
     TIME_INDICATOR_REGEXS.map do |_, tir|
       string.match(tir) if string.match(tir)
-    end.compact.first[0]
+    end.compact.first[0].strip
   end
 
   def printable
