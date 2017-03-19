@@ -1,176 +1,118 @@
 describe SlackMessage do
+  reminder_texts =
+  [
+    {
+      body: "vera, remind me to do my thing everyday",
+      last_every: "everyday",
+      message: "do my thing everyday",
+      reminder_hash: {
+        message: "do my thing",
+        status: 'A',
+        recurrences_attributes: [{
+          bin_week_day: '1111111',
+          frequency_code: 'W',
+          interval: 1
+        }]
+      }
+    },
+    {
+      body: "remind me that tom cheats every time at poker every saturday",
+      last_every: "every saturday",
+      message: "tom cheats every time at poker every saturday"
+    },
+    {
+      body: "vera remind me to get a haircut in 5 minutes",
+      last_every: nil,
+      message: "get a haircut in 5 minutes",
+      last_in: "in 5 minutes",
+      reminder_hash: {
+        message: "get a haircut",
+        status: 'A',
+        occurrence: Time.now + 5.minutes
+      }
+    },
+    {
+      body: "vera remind me to get a haircut in 2 days at 1 pm",
+      last_every: nil,
+      message: "get a haircut in 2 days at 1 pm",
+      last_in: "in 2 days at 1 pm",
+      last_at: "at 1 pm",
+      reminder_hash: {
+        message: "get a haircut",
+        status: 'A',
+        occurrence: (Time.now + 2.days).change(hour: 13)
+      }
+    },
+    {
+      body: "vera remind me to get a haircut at 5 pm",
+      last_every: nil,
+      message: "get a haircut at 5 pm",
+      last_at: "at 5 pm",
+      reminder_hash: {
+        message: "get a haircut",
+        status: 'A',
+        occurrence: (Time.now).change(hour: 17)
+      }
+    }
+  ]
 
-  let(:reminder_text) {"play basketball at the park"}
+  reminder_texts.each do |rt|
 
-  context "Reminder Message" do
+    describe "unit tests" do
 
-    let(:reminder_attr) { {message_type: 'r', channel: 'C2W46HWJ2'} }
+      before(:each) do
+        @slack_message = SlackMessage.new(
+        body:           rt[:body],
+        message_type:   'r',
+        channel:        'C2W46HWJ2'
+        )
+      end
 
-    context "Relative Time" do
-
-      context "simple reminder, relative time, same day, seconds" do
-        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} in 1 second")}
-        let(:slack_message) { SlackMessage.new(reminder) }
-        let(:relative_time) {Time.now + 1}
-
-        it "parses time" do
-          expect(slack_message.time.text).to eq "in 1 second"
-          expect(slack_message.time.relative).to be_within(0.1).of(relative_time)
-          expect(slack_message.time.minute).to eq((relative_time).min)
-          expect(slack_message.time.hour).to eq((relative_time).hour)
-        end
-        it "parses the date" do
-          expect(slack_message.date.to_date).to eq(Date.today)
-        end
-        it "parses the reminder" do
-          expect(slack_message.reminder).to eq(reminder_text)
+      context '#last_every' do
+        it "returns #{rt[:last_every]} when body is '#{rt[:body]}'" do
+          if rt[:last_every]
+            expect(@slack_message.last_every).to eq rt[:last_every]
+          end
         end
       end
 
-      context "simple reminder, relative time, same day, seconds, abbreviated" do
-        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} in 5 sec")}
-        let(:slack_message) { SlackMessage.new(reminder) }
-        let(:relative_time) {Time.now + 5}
-
-        it "parses time" do
-          expect(slack_message.time.text).to eq "in 5 sec"
-          expect(slack_message.time.relative).to be_within(0.1).of(relative_time)
-          expect(slack_message.time.minute).to eq((relative_time).min)
-          expect(slack_message.time.hour).to eq((relative_time).hour)
-        end
-        it "parses the date" do
-          expect(slack_message.date.to_date).to eq(Date.today)
-        end
-        it "parses the reminder" do
-          expect(slack_message.reminder).to eq(reminder_text)
+      context '#last_in' do
+        it "returns #{rt[:last_in]} when body is '#{rt[:body]}'" do
+          if rt[:last_in]
+            expect(@slack_message.last_in).to eq rt[:last_in]
+          end
         end
       end
 
-      context "simple reminder, relative time, same day, minutes" do
-        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} in 5 minutes")}
-        let(:slack_message) { SlackMessage.new(reminder) }
-        let(:relative_time) {Time.now + 5.minutes}
-
-        it "parses time" do
-          expect(slack_message.time.text).to eq "in 5 minutes"
-          expect(slack_message.time.relative).to be_within(0.1).of(relative_time)
-          expect(slack_message.time.minute).to eq((relative_time).min)
-          expect(slack_message.time.hour).to eq((relative_time).hour)
-        end
-        it "parses the date" do
-          expect(slack_message.date.to_date).to eq((relative_time).to_date)
-        end
-        it "parses the reminder" do
-          expect(slack_message.reminder).to eq(reminder_text)
+      context '#last_at' do
+        it "returns #{rt[:last_at]} when body is '#{rt[:body]}'" do
+          if rt[:last_at]
+            expect(@slack_message.last_at).to eq rt[:last_at]
+          end
         end
       end
 
-      context "simple reminder, relative time, same day, minutes, abbreviated" do
-        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} in 5 min")}
-        let(:slack_message) { SlackMessage.new(reminder) }
-        let(:relative_time) {Time.now + 5.minutes}
-
-        it "parses time" do
-          expect(slack_message.time.text).to eq "in 5 min"
-          expect(slack_message.time.relative).to be_within(0.1).of(relative_time)
-          expect(slack_message.time.minute).to eq((relative_time).min)
-          expect(slack_message.time.hour).to eq((relative_time).hour)
-        end
-        it "parses the date" do
-          expect(slack_message.date.to_date).to eq((relative_time).to_date)
-        end
-        it "parses the reminder" do
-          expect(slack_message.reminder).to eq(reminder_text)
+      context "#message" do
+        it "returns #{rt[:message]} when body is '#{rt[:body]}'" do
+          if rt[:message]
+            expect(@slack_message.message).to eq rt[:message]
+          end
         end
       end
 
-      context "simple reminder, relative time, same day, hours" do
-        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} in 5 hours")}
-        let(:slack_message) { SlackMessage.new(reminder) }
-        let(:relative_time) {Time.now + 5.hours}
-
-        it "parses time" do
-          expect(slack_message.time.text).to eq "in 5 hours"
-          expect(slack_message.time.relative).to be_within(0.1).of(relative_time)
-          expect(slack_message.time.minute).to eq((relative_time).min)
-          expect(slack_message.time.hour).to eq((relative_time).hour)
-        end
-        it "parses the date" do
-          expect(slack_message.date.to_date).to eq((relative_time).to_date)
-        end
-        it "parses the reminder" do
-          expect(slack_message.reminder).to eq(reminder_text)
-        end
-      end
-
-      context "simple reminder, relative time, same day, hours, abbreviated" do
-        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} in 5 hrs")}
-        let(:slack_message) { SlackMessage.new(reminder) }
-        let(:relative_time) {Time.now + 5.hours}
-
-        it "parses time" do
-          expect(slack_message.time.text).to eq "in 5 hrs"
-          expect(slack_message.time.relative).to be_within(0.1).of(relative_time)
-          expect(slack_message.time.minute).to eq((relative_time).min)
-          expect(slack_message.time.hour).to eq((relative_time).hour)
-        end
-        it "parses the date" do
-          expect(slack_message.date.to_date).to eq((relative_time).to_date)
-        end
-        it "parses the reminder" do
-          expect(slack_message.reminder).to eq(reminder_text)
+      context "#reminder_hash" do
+        it "returns the correct reminder hash when body is '#{rt[:body]}'" do
+          if rt[:reminder_hash]
+            if (rt[:reminder_hash][:occurrence] rescue nil)
+              occ = rt[:reminder_hash].delete(:occurrence)
+              expect(@slack_message.reminder_hash.delete(:occurrence)).to be_within(1.second).of(occ)
+            end
+            expect(@slack_message.reminder_hash).to eq rt[:reminder_hash]
+          end
         end
       end
 
     end
 
-    context "Absolute Time" do
-
-      context "simple reminder, absolute time, no date provided, before time" do
-        before(:each) do
-          @now = DateTime.now.localtime.beginning_of_day
-          @target = @now + 14.hours + 45.minutes
-        end
-        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} at 2:45 pm")}
-        let(:slack_message) { SlackMessage.new(reminder) }
-
-        it "parses time" do
-          expect(slack_message.time.text).to eq "at 2:45 pm"
-          expect(slack_message.time.absolute).to eq(@target)
-          expect(slack_message.time.minute).to eq(45)
-          expect(slack_message.time.hour(type: 24)).to eq(14)
-        end
-        it "parses the date" do
-          expect(slack_message.date.to_date).to eq(Date.today)
-        end
-        it "parses the reminder" do
-          expect(slack_message.reminder).to eq(reminder_text)
-        end
-      end
-
-      context "simple reminder, absolute time, tomorrow, before time" do
-        before(:each) do
-          @now = (DateTime.now).localtime.beginning_of_day
-          @target = @now + 1.days + 14.hours + 45.minutes
-        end
-        let(:reminder) {reminder_attr.merge(body: "vera remind me to #{reminder_text} at 2:45 pm tomorrow")}
-        let(:slack_message) { SlackMessage.new(reminder) }
-
-        it "parses time" do
-          expect(slack_message.time.text).to eq "at 2:45 pm"
-          expect(slack_message.time.absolute).to eq(@target)
-          expect(slack_message.time.minute).to eq(45)
-          expect(slack_message.time.hour(type: 24)).to eq(14)
-        end
-        it "parses the date" do
-          expect(slack_message.date.to_date).to eq(Date.today)
-        end
-        it "parses the reminder" do
-          expect(slack_message.reminder).to eq(reminder_text)
-        end
-      end
-
-
-    end
   end
 end

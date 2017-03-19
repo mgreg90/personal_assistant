@@ -1,5 +1,7 @@
 class SlackMessage < ApplicationRecord
 
+  include MessageToReminder
+
   class WrongType < StandardError; end
 
   belongs_to :context
@@ -9,35 +11,23 @@ class SlackMessage < ApplicationRecord
     'r' => {class: Reminder, regex: /remind me (to|about|that) /i}
   }.freeze
 
-  def body
-    @body ||= MsgBody.new(super).strip
-  end
-
-  def time
-    @time ||= MsgTime.new(body.stripped)
-  end
-
-  def date
-    @date ||= begin
-      if time.type == :relative
-        MsgDate.new(body.stripped(type_regex: message_type[:regex]), @time)
-      else
-        MsgDate.new(body.stripped(msg_time: time, type_regex: message_type[:regex]))
-      end
-    end
-  end
-
   def reminder
     @reminder ||= begin
-      if message_type[:class] != MESSAGE_TYPE_MAP['r'][:class]
-        raise WrongType, "message_type is not Reminder!"
-      end
-      body.stripped(msg_time: time, msg_date: date, type_regex: message_type[:regex])
+      Reminder.new(reminder_hash)
     end
+  end
+
+  def reminder_hash
+    raise WrongType, "message_type is not Reminder!" unless reminder?
+    super
   end
 
   def message_type
     @message_type ||= MESSAGE_TYPE_MAP[super]
+  end
+
+  def reminder?
+    message_type[:class] == MESSAGE_TYPE_MAP['r'][:class]
   end
 
 end

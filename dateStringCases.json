@@ -1,0 +1,75 @@
+{
+  "timeStrings": [
+    {
+      "title": "relative",
+      "text": "in {number} {unit}",
+      "examples": ["in 2 days", "in 5 min"],
+      "recurring": false,
+      "case": 1
+    },
+    {
+      "title": "relative_to_absolute",
+      "text": "in {number} {unit(min: 'day')} at {time || number(1..12)}",
+      "examples": ["in 2 days at 3", "in 2 weeks at 11 am"],
+      "recurring": false,
+      "case": 2
+    },
+    {
+      "title": "absolute",
+      "text": "{||day} at {time || number(1..12)} {||meridian}",
+      "examples": ["at 12 pm", "at 3", "wednesday at 3", "tomorrow at 12"],
+      "comment": "use defaults for numbers 1-12 in case of no meridian and have handling for no-default numbers",
+      "recurring": false,
+      "case": 3
+    },
+    {
+      "text": "every {number} {unit}",
+      "examples": ["every 2 months", "every 10 days"],
+      "recurring": true,
+      "case": 4
+    },
+    {
+      "text": "every {weekday}",
+      "examples": ["every tuesday"],
+      "recurring": true,
+      "case": 5
+    },
+    {
+      "text": "every {number} day(s) at {time || number(1..12) {||meridian}}",
+      "examples": ["every 2 days at 6", "every day at noon"],
+      "comment": "use defaults for numbers 1-12 in case of no meridian and have handling for no-default numbers",
+      "recurring": true,
+      "case": 6
+    },
+    {
+      "text": "every {number} weeks on {weekday(s)}",
+      "examples": ["every 3 weeks on thursdays and tuesdays"],
+      "recurring": true,
+      "case": 7
+    },
+    {
+      "text": "every {number} months on the {ordinal_number}",
+      "examples": ["every 3 months on the 23rd"],
+      "recurring": true,
+      "case": 8
+    },
+    {
+      "text": "every {number || 'last'} {weekday}",
+      "examples": ["every 2nd monday", "every last wednesday and thursday", "every 3rd tues"],
+      "recurring": true,
+      "case": 9
+    },
+    {
+      "title": "everyday",
+      "text": "everyday",
+      "recurring": true,
+      "case": 10
+    },
+    {
+      "text": "every {year_day}",
+      "examples": ["every march 12th", "every jun 10"],
+      "recurring": true,
+      "case": 11
+    }
+  ]
+}
