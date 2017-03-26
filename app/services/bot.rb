@@ -18,7 +18,6 @@ class Bot < SlackRubyBot::Bot
     )
 
     reminder = slack_message.reminder
-    byebug
 
     # Old method
     # reminder = Reminder.build_from_slack_message(slack_message, current_context)

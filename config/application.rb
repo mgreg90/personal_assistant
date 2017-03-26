@@ -35,3 +35,4 @@ end
 
 require "ext/regexp"
 require "ext/time"
+require "ext/date"

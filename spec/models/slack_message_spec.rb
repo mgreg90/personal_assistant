@@ -2,26 +2,74 @@ describe SlackMessage do
   reminder_texts =
   [
     {
-      body: "vera, remind me to do my thing everyday",
-      last_every: "everyday",
-      message: "do my thing everyday",
+      body: "vera, remind me to do my thing everyday at noon",
+      case: 10,
+      last_every: "everyday at noon",
+      last_at: "at noon",
+      message: "do my thing everyday at noon",
       reminder_hash: {
         message: "do my thing",
         status: 'A',
         recurrences_attributes: [{
           bin_week_day: '1111111',
           frequency_code: 'W',
-          interval: 1
+          interval: 1,
+          time: {
+            hour: 12,
+            min: 0,
+            sec: 0,
+            timezone: 'America/New_York'
+          }
         }]
       }
     },
     {
-      body: "remind me that tom cheats every time at poker every saturday",
-      last_every: "every saturday",
-      message: "tom cheats every time at poker every saturday"
+      body: "vera, remind me to do my thing everyday at 1 pm",
+      case: 10,
+      last_every: "everyday at 1 pm",
+      last_at: "at 1 pm",
+      message: "do my thing everyday at 1 pm",
+      reminder_hash: {
+        message: "do my thing",
+        status: 'A',
+        recurrences_attributes: [{
+          bin_week_day: '1111111',
+          frequency_code: 'W',
+          interval: 1,
+          time: {
+            hour: 13,
+            min: 0,
+            sec: 0,
+            timezone: 'America/New_York'
+          }
+        }]
+      }
+    },
+    {
+      body: "remind me that tom cheats every time at poker every saturday at 1 am",
+      case: 5,
+      last_every: "every saturday at 1 am",
+      last_at: "at 1 am",
+      message: "tom cheats every time at poker every saturday at 1 am",
+      reminder_hash: {
+        message: "tom cheats every time at poker",
+        status: 'A',
+        recurrences_attributes: [{
+          bin_week_day: '0000001',
+          frequency_code: 'W',
+          interval: 1,
+          time: {
+            hour: 1,
+            min: 0,
+            sec: 0,
+            timezone: 'America/New_York'
+          }
+        }]
+      }
     },
     {
       body: "vera remind me to get a haircut in 5 minutes",
+      case: 1,
       last_every: nil,
       message: "get a haircut in 5 minutes",
       last_in: "in 5 minutes",
@@ -33,6 +81,7 @@ describe SlackMessage do
     },
     {
       body: "vera remind me to get a haircut in 2 days at 1 pm",
+      case: 2,
       last_every: nil,
       message: "get a haircut in 2 days at 1 pm",
       last_in: "in 2 days at 1 pm",
@@ -45,6 +94,7 @@ describe SlackMessage do
     },
     {
       body: "vera remind me to get a haircut at 5 pm",
+      case: 3,
       last_every: nil,
       message: "get a haircut at 5 pm",
       last_at: "at 5 pm",

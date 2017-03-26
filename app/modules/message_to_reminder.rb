@@ -11,6 +11,8 @@ module MessageToReminder
         if everyday?
           # case 10
           everyday_reminder_hash
+        else
+          recurring_wday_reminder_hash
         end
       else
         if last_in?
@@ -31,7 +33,7 @@ module MessageToReminder
   end
 
   def message
-    MessageBody.new(body).stripped
+    TimeString.new(body).stripped
   end
 
   def last_every?
@@ -40,9 +42,9 @@ module MessageToReminder
 
   def last_every
     @last_every ||=
-    if last_every?
-      message[message.rindex(LAST_EVERY)..-1]
-    end
+      if last_every?
+        message[message.rindex(LAST_EVERY)..-1]
+      end
   end
 
   def last_in?
@@ -51,10 +53,10 @@ module MessageToReminder
 
   def last_in(**options)
     @last_in ||=
-    if last_in?
-      rts = RelativeTimeString.new(message[message.rindex(LAST_IN)..-1])
-      options[:clean] ? rts.gsub(last_at, '') : rts
-    end
+      if last_in?
+        rts = RelativeTimeString.new(message[message.rindex(LAST_IN)..-1])
+        options[:clean] ? rts.gsub(last_at, '') : rts
+      end
   end
 
   def relative_time_string
@@ -76,11 +78,19 @@ module MessageToReminder
   end
 
   def everyday?
-    @everyday ||= !!recurring_time_string
+    @everyday ||= !!everyday_match
+  end
+
+  def everyday_match
+    last_every.match(EVERYDAY) if last_every
   end
 
   def recurring_time_string
-    last_every.match(EVERYDAY)[0] rescue nil
+    if everyday?
+      everyday_match[0]
+    elsif last_at? && last_every
+      last_every.gsub(last_at, '').strip
+    end
   end
 
   def default_message
@@ -103,7 +113,19 @@ module MessageToReminder
       recurrences_attributes: [{
         bin_week_day: '1111111',
         frequency_code: Reminder::WEEKLY_FREQUENCY,
-        interval: 1
+        interval: 1,
+        time: absolute_time_string.to_hash
+      }]
+    }.merge(default_reminder_hash)
+  end
+
+  def recurring_wday_reminder_hash
+    {
+      recurrences_attributes: [{
+        bin_week_day: recurring_time_string.bin_day_from_wday, # needs a method
+        frequency_code: Reminder::WEEKLY_FREQUENCY,
+        interval: 1,
+        time: absolute_time_string.to_hash
       }]
     }.merge(default_reminder_hash)
   end
@@ -116,13 +138,13 @@ module MessageToReminder
 
   def relative_to_absolute_reminder_hash
     {
-      occurrence: relative_time_string.time.change(absolute_time_string.time_hash)
+      occurrence: relative_time_string.time.change(absolute_time_string.to_hash)
     }.merge(default_reminder_hash)
   end
 
   def absolute_reminder_hash
     {
-      occurrence: Time.now.change(absolute_time_string.time_hash)
+      occurrence: Time.now.change(absolute_time_string.to_hash)
     }.merge(default_reminder_hash)
   end
 

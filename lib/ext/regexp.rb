@@ -5,7 +5,7 @@ class Regexp
   end
 
   def self.from_string(string)
-    /(\s?)#{string}(\s?)/i
+    /(\b?)#{string}(\b?)/i
   end
 
 end

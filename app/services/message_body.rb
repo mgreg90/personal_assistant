@@ -44,4 +44,9 @@ class MessageBody < String
     /(\b*)#{ string.is_a?(Symbol) ? send(string) : string }(\b*)/i
   end
 
+  def self.regexify(string)
+    return string if string.is_a?(Regexp)
+    /(\b*)#{ string.is_a?(Symbol) ? send(string) : string }(\b*)/i
+  end
+
 end
