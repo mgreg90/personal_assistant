@@ -33,6 +33,10 @@ class TimeString < MessageBody
     noon: { unit: 'noon', value: {sec: 0, min: 0, hour: 12}, regex: /(\b(noon)\b){1}/i }
   }.freeze
 
+  UNIQ_WDAYS = [
+    {values: ['weekday'], bin_week_day: '0111110'}
+  ]
+
   UNITS = SHORT_TERM_UNITS.merge(LONG_TERM_UNITS).merge(UNIQ_UNITS).freeze
 
   TIME_VALUES = /\b(\d){1,3}\b/i.freeze
@@ -72,8 +76,21 @@ class TimeString < MessageBody
     false
   end
 
+  def uniq_bin_wday
+    @uniq_bin_wday ||= begin
+      UNIQ_WDAYS.each do |wd|
+        wd[:values].each do |matcher|
+          if match(/\b#{matcher}\b/i)
+            return wd[:bin_week_day]
+          end
+        end
+      end
+      false
+    end
+  end
+
   def bin_day_from_wday
-    # good stuff here!
+    return uniq_bin_wday if uniq_bin_wday
     Date::DAYNAMES.map do |dn|
       (match_weekdays.include?(dn) ? '1' : '0')
     end.join

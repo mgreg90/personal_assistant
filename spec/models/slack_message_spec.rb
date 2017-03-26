@@ -24,6 +24,28 @@ describe SlackMessage do
       }
     },
     {
+      body: "vera, remind me to do my thing every weekday at noon",
+      case: 10,
+      last_every: "every weekday at noon",
+      last_at: "at noon",
+      message: "do my thing every weekday at noon",
+      reminder_hash: {
+        message: "do my thing",
+        status: 'A',
+        recurrences_attributes: [{
+          bin_week_day: '0111110',
+          frequency_code: 'W',
+          interval: 1,
+          time: {
+            hour: 12,
+            min: 0,
+            sec: 0,
+            timezone: 'America/New_York'
+          }
+        }]
+      }
+    },
+    {
       body: "vera, remind me to do my thing everyday at 1 pm",
       case: 10,
       last_every: "everyday at 1 pm",
