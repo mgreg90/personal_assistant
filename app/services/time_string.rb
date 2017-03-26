@@ -1,5 +1,7 @@
 class TimeString < MessageBody
 
+  class InvalidTimeString < StandardError; end
+
   DEFAULT_TIMEZONE = 'America/New_York'
 
   SHORT_TERM_UNITS = {

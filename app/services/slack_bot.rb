@@ -1,4 +1,6 @@
-class Bot < SlackRubyBot::Bot
+class SlackBot < SlackRubyBot::Bot
+
+  class InternalError < StandardError; end
 
   TEST_RESPONSE = "Alive and well!"
 
@@ -19,16 +21,17 @@ class Bot < SlackRubyBot::Bot
 
     reminder = slack_message.reminder
 
-    # Old method
-    # reminder = Reminder.build_from_slack_message(slack_message, current_context)
-    # current_user.reminders << reminder
-    #
-
     current_context.slack_messages << slack_message
     SendReminderJob.set(wait_until: reminder.next_occurrence)
       .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
 
-    client.say(channel: data.channel, text: "you got it!")
+    byebug
+
+    if ENV['RAILS_ENV'] == "development"
+      client.say(channel: data.channel, text: "development")
+    else
+      client.say(channel: data.channel, text: "you got it!\nTime: #{Time.now}")
+    end
   end
 
   command 'ping' do |client, data, _|

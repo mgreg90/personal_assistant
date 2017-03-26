@@ -5,7 +5,7 @@ require_relative 'config/environment'
 Thread.abort_on_exception = true
 
 Thread.new do
-  Bot.run
+  SlackBot.run
 end
 
 run Rails.application
