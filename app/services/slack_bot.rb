@@ -28,7 +28,7 @@ class SlackBot < SlackRubyBot::Bot
     byebug
 
     if ENV['RAILS_ENV'] == "development"
-      client.say(channel: data.channel, text: "development")
+      client.say(channel: data.channel, text: "development\nTime: #{Time.now}")
     else
       client.say(channel: data.channel, text: "you got it!\nTime: #{Time.now}")
     end

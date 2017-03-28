@@ -17,9 +17,9 @@ class AbsoluteTimeString < TimeString
     case unit
     when :hours
       if meridian == :pm
-        value + 12
+        value.first + 12
       else
-        value
+        value.first
       end
     when :minutes, :seconds
       false
@@ -29,7 +29,12 @@ class AbsoluteTimeString < TimeString
   def minute
     case unit
     when :hours
-      0
+      case count(':') # to cover HH:MM format (or potentially later HH:MM:SS)
+      when 0
+        0
+      when 1
+        value.second
+      end
     when :minutes
       value
     when :seconds

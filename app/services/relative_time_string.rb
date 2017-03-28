@@ -7,7 +7,7 @@ class RelativeTimeString < TimeString
   end
 
   def time
-    Time.now + value.send(:"#{unit}")
+    Time.now + value.first.send(:"#{unit}")
   end
 
 end

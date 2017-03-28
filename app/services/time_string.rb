@@ -41,7 +41,8 @@ class TimeString < MessageBody
 
   UNITS = SHORT_TERM_UNITS.merge(LONG_TERM_UNITS).merge(UNIQ_UNITS).freeze
 
-  TIME_VALUES = /\b(\d){1,3}\b/i.freeze
+  TIME_REGEX_STRING = "([0-1]?[0-9]|2[0-3]):[0-5][0-9]".freeze
+  TIME_VALUES = /\b#{TIME_REGEX_STRING}|(\d){1,3}\b/i.freeze
 
   MERIDIANS = {
     am: /\b(a(\.)?m(\.|\b))/i,
@@ -68,7 +69,12 @@ class TimeString < MessageBody
   end
 
   def value
-    match(TIME_VALUES)[0].to_i
+    case count(':')
+    when 0
+      [match(TIME_VALUES)[0].to_i]
+    when 1
+      match(TIME_VALUES)[0].split(':').map(&:to_i)
+    end
   end
 
   def meridian

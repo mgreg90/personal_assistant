@@ -90,6 +90,28 @@ describe SlackMessage do
       }
     },
     {
+      body: "remind me that tom cheats every time at poker every saturday at 1:45 am",
+      case: 5,
+      last_every: "every saturday at 1:45 am",
+      last_at: "at 1:45 am",
+      message: "tom cheats every time at poker every saturday at 1:45 am",
+      reminder_hash: {
+        message: "tom cheats every time at poker",
+        status: 'A',
+        recurrences_attributes: [{
+          bin_week_day: '0000001',
+          frequency_code: 'W',
+          interval: 1,
+          time: {
+            hour: 1,
+            min: 45,
+            sec: 0,
+            timezone: 'America/New_York'
+          }
+        }]
+      }
+    },
+    {
       body: "vera remind me to get a haircut in 5 minutes",
       case: 1,
       last_every: nil,
@@ -124,6 +146,18 @@ describe SlackMessage do
         message: "get a haircut",
         status: 'A',
         occurrence: (Time.now).change(hour: 17)
+      }
+    },
+    {
+      body: "vera remind me to get a haircut at 5:10 pm",
+      case: 3,
+      last_every: nil,
+      message: "get a haircut at 5:10 pm",
+      last_at: "at 5:10 pm",
+      reminder_hash: {
+        message: "get a haircut",
+        status: 'A',
+        occurrence: (Time.now).change(hour: 17, min: 10)
       }
     }
   ]
@@ -181,6 +215,12 @@ describe SlackMessage do
             end
             expect(@slack_message.reminder_hash).to eq rt[:reminder_hash]
           end
+        end
+      end
+
+      context "error" do
+        it "throws an error" do
+          # if
         end
       end
 
