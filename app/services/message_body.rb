@@ -37,6 +37,12 @@ class MessageBody < String
     without(:greeting, :reminder).strip
   end
 
+  def response_replace
+    gsub(/\b[Ii]\b/, ' You ')
+    .capitalize
+    .gsub('  ', ' ')
+  end
+
   private
 
   def regexify(string)

@@ -4,6 +4,7 @@ module MessageToReminder
   LAST_IN = /(\b)in(\b)/i
   LAST_AT = /(\b)at(\b)/i
   EVERYDAY = /(\b)everyday(\b)/i
+  RECURRING_VALUE_UNIT = /(\b)every(\s)(\d*)(\s)days(\b)/i
 
   def reminder_hash
     @reminder_hash ||= begin
@@ -12,7 +13,16 @@ module MessageToReminder
           # case 10
           everyday_reminder_hash
         else
-          recurring_wday_reminder_hash
+          if recurring_value_unit?
+            # case 6
+            recurring_value_unit_reminder_hash
+            # case 7
+            # case 8
+            # case 9
+            # case 4
+          else
+            recurring_wday_reminder_hash
+          end
         end
       else
         if last_in?
@@ -87,9 +97,20 @@ module MessageToReminder
 
   def recurring_time_string
     if everyday?
-      everyday_match[0]
+      RecurringTimeString.new(everyday_match[0])
     elsif last_at? && last_every
-      last_every.gsub(last_at, '').strip
+      RecurringTimeString.new(last_every.gsub(last_at, '').strip)
+    end
+  end
+
+  def recurring_value_unit?
+    !!recurring_value_match
+  end
+
+  def recurring_value_match
+    @recurring_value_match ||= begin
+      rec_match = message.match(RECURRING_VALUE_UNIT)
+      rec_match[0] if rec_match
     end
   end
 
@@ -98,7 +119,7 @@ module MessageToReminder
     args << relative_time_string if relative_time_string
     args << absolute_time_string if absolute_time_string
     args << recurring_time_string if recurring_time_string
-    message.without(*args).strip
+    message.without(*args).response_replace.strip.capitalize
   end
 
   def default_reminder_hash
@@ -113,18 +134,29 @@ module MessageToReminder
       recurrences_attributes: [{
         bin_week_day: '1111111',
         frequency_code: Reminder::WEEKLY_FREQUENCY,
-        interval: 1,
+        interval: recurring_time_string.interval,
         time: absolute_time_string.to_hash
       }]
     }.merge(default_reminder_hash)
   end
 
   def recurring_wday_reminder_hash
+    # byebug if body == "remind me that I have to exercise every 26 weeks at 8 a.m."
     {
       recurrences_attributes: [{
-        bin_week_day: recurring_time_string.bin_day_from_wday, # needs a method
+        bin_week_day: recurring_time_string.bin_day_from_wday(default: Date.today.bin_day), # needs a method
         frequency_code: Reminder::WEEKLY_FREQUENCY,
-        interval: 1,
+        interval: recurring_time_string.interval,
+        time: absolute_time_string.to_hash
+      }]
+    }.merge(default_reminder_hash)
+  end
+
+  def recurring_value_unit_reminder_hash
+    {
+      recurrences_attributes: [{
+        interval: recurring_time_string.values.first,
+        frequency_code: TimeString::UNITS[recurring_time_string.unit][:frequency_code],
         time: absolute_time_string.to_hash
       }]
     }.merge(default_reminder_hash)

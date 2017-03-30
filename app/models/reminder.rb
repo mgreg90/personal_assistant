@@ -10,6 +10,7 @@ class Reminder < ApplicationRecord
 
   ACTIVE_STATUS = 'A'.freeze
   WEEKLY_FREQUENCY = 'W'.freeze
+  DAILY_FREQUENCY = 'D'.freeze
 
 
 

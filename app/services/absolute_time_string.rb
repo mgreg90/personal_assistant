@@ -17,9 +17,9 @@ class AbsoluteTimeString < TimeString
     case unit
     when :hours
       if meridian == :pm
-        value.first + 12
+        values.first + 12
       else
-        value.first
+        values.first
       end
     when :minutes, :seconds
       false
@@ -33,10 +33,10 @@ class AbsoluteTimeString < TimeString
       when 0
         0
       when 1
-        value.second
+        values.second
       end
     when :minutes
-      value
+      values.first
     when :seconds
       false
     end
@@ -47,7 +47,7 @@ class AbsoluteTimeString < TimeString
     when :hours, :minutes
       0
     when :seconds
-      value
+      values.first
     end
   end
 
