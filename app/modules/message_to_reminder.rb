@@ -1,10 +1,11 @@
 module MessageToReminder
 
-  LAST_EVERY = /(\b)every/i
-  LAST_IN = /(\b)in(\b)/i
-  LAST_AT = /(\b)at(\b)/i
-  EVERYDAY = /(\b)everyday(\b)/i
-  RECURRING_VALUE_UNIT = /(\b)every(\s)(\d*)(\s)days(\b)/i
+  LAST_EVERY = /(\b)every/i.freeze
+  LAST_IN = /(\b)in(\b)/i.freeze
+  LAST_AT = /(\b)at(\b)/i.freeze
+  LAST_ON = /(\b)on(\b)/i.freeze
+  EVERYDAY = /(\b)everyday(\b)/i.freeze
+  RECURRING_VALUE_UNIT = /(\b)every(\s)(\d*)(\s)days(\b)/i.freeze
 
   def reminder_hash
     @reminder_hash ||= begin
@@ -69,18 +70,32 @@ module MessageToReminder
       end
   end
 
-  def relative_time_string
-    last_in(clean: !!last_at)
-  end
-
   def last_at?
     !!message.match(LAST_AT)
   end
 
   def last_at
     @last_at ||= if last_at?
-      message[message.rindex(LAST_AT)..-1]
+      la = message[message.rindex(LAST_AT)..-1]
+      la = la.gsub(last_on, '').strip if last_on
+      la
     end
+  end
+
+  def last_on
+    @last_on ||= if last_on?
+      lo = message[message.rindex(LAST_ON)..-1]
+      # lo = lo.gsub(last_at, '').strip if last_at # causes infinite loop
+      lo
+    end
+  end
+
+  def last_on?
+    !!message.match(LAST_ON)
+  end
+
+  def relative_time_string
+    last_in(clean: last_at?)
   end
 
   def absolute_time_string

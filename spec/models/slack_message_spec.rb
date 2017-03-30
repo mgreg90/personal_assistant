@@ -160,29 +160,29 @@ describe SlackMessage do
         }],
       }
     },
-    # {
-    #   body: "remind me that I have to exercise every 26 weeks on sundays at noon",
-    #   case: 6,
-    #   last_every: "every 26 weeks on sundays at noon",
-    #   last_at: "at noon",
-    #   last_on: "on sundays"
-    #   message: "I have to exercise every 26 weeks on sundays at noon",
-    #   reminder_hash: {
-    #     message: "You have to exercise",
-    #     status: 'A',
-    #     recurrences_attributes: [{
-    #       interval: 26,
-    #       bin_week_day: Date.today.bin_day,
-    #       frequency_code: 'W',
-    #       time: {
-    #         hour: 12,
-    #         min: 0,
-    #         sec: 0,
-    #         timezone: 'America/New_York'
-    #       }
-    #     }],
-    #   }
-    # },
+      {
+        body: "remind me that I have to exercise every 26 weeks on sundays at noon",
+        case: 6,
+        last_every: "every 26 weeks on sundays at noon",
+        last_at: "at noon",
+        last_on: "on sundays",
+        message: "I have to exercise every 26 weeks on sundays at noon",
+        reminder_hash: {
+          message: "You have to exercise",
+          status: 'A',
+          recurrences_attributes: [{
+            interval: 26,
+            bin_week_day: Date.today.bin_day,
+            frequency_code: 'W',
+            time: {
+              hour: 12,
+              min: 0,
+              sec: 0,
+              timezone: 'America/New_York'
+            }
+          }],
+        }
+      },
     {
       body: "vera, remind me to do my thing everyday at noon",
       case: 10,
