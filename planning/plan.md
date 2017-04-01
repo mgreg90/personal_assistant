@@ -16,6 +16,9 @@ We then create a hash of the data necessary to create a reminder.
 
 The reminder is saved unless validations in the reminder class (custom validator? probably) tell us it is an invalid combination of time data.
 
+## Models Implied
+1. Preposition
+
 ## Classes Implied
 1. MessageBody
 2. EveryPhrase
@@ -23,5 +26,8 @@ The reminder is saved unless validations in the reminder class (custom validator
 4. OnPhrase
 5. InPhrase
 6. TimePhrase (to be inherited by the others)
+
+## Modules Implied
+1. PrepositionalPhraseUtils (for 'phrase class' class methods for stripping)
 
 I'm thinking they can just be service classes since they will really only be used once - during parsing a message into a reminder hash.
