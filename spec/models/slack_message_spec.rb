@@ -160,29 +160,29 @@ describe SlackMessage do
         }],
       }
     },
-      {
-        body: "remind me that I have to exercise every 26 weeks on sundays at noon",
-        case: 6,
-        last_every: "every 26 weeks on sundays at noon",
-        last_at: "at noon",
-        last_on: "on sundays",
-        message: "I have to exercise every 26 weeks on sundays at noon",
-        reminder_hash: {
-          message: "You have to exercise",
-          status: 'A',
-          recurrences_attributes: [{
-            interval: 26,
-            bin_week_day: Date.today.bin_day,
-            frequency_code: 'W',
-            time: {
-              hour: 12,
-              min: 0,
-              sec: 0,
-              timezone: 'America/New_York'
-            }
-          }],
-        }
-      },
+    {
+      body: "remind me that I have to exercise every 6 weeks on tuesdays at noon",
+      case: 6,
+      last_every: "every 6 weeks on tuesdays at noon",
+      last_at: "at noon",
+      last_on: "on tuesdays",
+      message: "I have to exercise every 6 weeks on tuesdays at noon",
+      reminder_hash: {
+        message: "You have to exercise",
+        status: 'A',
+        recurrences_attributes: [{
+          interval: 6,
+          bin_week_day: '0010000',
+          frequency_code: 'W',
+          time: {
+            hour: 12,
+            min: 0,
+            sec: 0,
+            timezone: 'America/New_York'
+          }
+        }],
+      }
+    },
     {
       body: "vera, remind me to do my thing everyday at noon",
       case: 10,
@@ -249,6 +249,29 @@ describe SlackMessage do
         }]
       }
     },
+    {
+      body: "remind me that I have to exercise every 6 weeks at 8 a.m. on sundays",
+      case: 6,
+      last_every: "every 6 weeks at 8 a.m. on sundays",
+      last_at: "at 8 a.m.",
+      last_on: "on sundays",
+      message: "I have to exercise every 6 weeks at 8 a.m. on sundays",
+      reminder_hash: {
+        message: "You have to exercise",
+        status: 'A',
+        recurrences_attributes: [{
+          interval: 6,
+          bin_week_day: '1000000',
+          frequency_code: 'W',
+          time: {
+            hour: 8,
+            min: 0,
+            sec: 0,
+            timezone: 'America/New_York'
+          }
+        }],
+      }
+    }
   ]
 
   reminder_texts.each do |rt|

@@ -1,0 +1,2 @@
+Added pry gems.
+Added and passed more tests.

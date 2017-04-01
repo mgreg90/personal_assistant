@@ -85,7 +85,7 @@ module MessageToReminder
   def last_on
     @last_on ||= if last_on?
       lo = message[message.rindex(LAST_ON)..-1]
-      # lo = lo.gsub(last_at, '').strip if last_at # causes infinite loop
+      lo = lo[0..(lo.index(LAST_AT) - 1)].strip if lo.match(LAST_AT)
       lo
     end
   end
