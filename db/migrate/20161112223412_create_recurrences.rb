@@ -6,6 +6,8 @@ class CreateRecurrences < ActiveRecord::Migration[5.0]
       t.integer     :month_day
       t.string      :bin_month_week
       t.integer     :interval
+      t.string      :time
+      t.string      :timezone
       t.references  :reminder, foreign_key: true
 
       t.timestamps

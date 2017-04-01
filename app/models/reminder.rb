@@ -1,12 +1,22 @@
 class Reminder < ApplicationRecord
+  ################################################
+  # ATTRIBUTES:
+  # t.text        :message
+  # t.string      :status
+  # t.datetime    :occurrence
+  # t.references  :user, foreign_key: true
+  ################################################
+
 
   belongs_to :user
+  belongs_to :reminder_type
 
   has_one :context
 
   has_many :recurrences
 
   accepts_nested_attributes_for :recurrences
+  accepts_nested_attributes_for :reminder_type
 
   ACTIVE_STATUS = 'A'.freeze
   WEEKLY_FREQUENCY = 'W'.freeze
@@ -32,7 +42,9 @@ class Reminder < ApplicationRecord
   end
 
   def next_occurrence
-    occurrence
+    occurrence || begin
+
+    end
   end
 
 end

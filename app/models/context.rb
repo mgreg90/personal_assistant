@@ -1,4 +1,9 @@
 class Context < ApplicationRecord
+  ################################################
+  # ATTRIBUTES:
+  # t.references  :user, foreign_key: true
+  # t.references  :reminder, foreign_key: true
+  ################################################
 
   belongs_to :user, optional: true
   belongs_to :reminder, optional: true

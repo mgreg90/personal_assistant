@@ -3,6 +3,7 @@ describe SlackMessage do
   [
     {
       body: "vera remind me to get a haircut in 5 minutes",
+      next_occurrence: Time.now + 5.minutes,
       case: 1,
       last_every: nil,
       message: "get a haircut in 5 minutes",
@@ -15,6 +16,7 @@ describe SlackMessage do
     },
     {
       body: "vera remind me to get a haircut in 2 days at 1 pm",
+      next_occurrence: (Time.now + 2.days).change(hour: 13),
       case: 2,
       last_every: nil,
       message: "get a haircut in 2 days at 1 pm",
@@ -28,6 +30,7 @@ describe SlackMessage do
     },
     {
       body: "vera remind me to get a haircut at 5 pm",
+      next_occurrence: (Time.now).change(hour: 17),
       case: 3,
       last_every: nil,
       message: "get a haircut at 5 pm",
@@ -40,6 +43,7 @@ describe SlackMessage do
     },
     {
       body: "vera remind me to get a haircut at 5:10 pm",
+      next_occurrence: (Time.now).change(hour: 17, min: 10),
       case: 3,
       last_every: nil,
       message: "get a haircut at 5:10 pm",
@@ -52,6 +56,7 @@ describe SlackMessage do
     },
     {
       body: "remind me that tom cheats every time at poker every saturday at 1 am",
+      next_occurrence: Chronic.parse('saturday at 1 am'),
       case: 5,
       last_every: "every saturday at 1 am",
       last_at: "at 1 am",
@@ -334,6 +339,15 @@ describe SlackMessage do
               expect(@slack_message.reminder_hash.delete(:occurrence)).to be_within(1.second).of(occ)
             end
             expect(@slack_message.reminder_hash).to eq rt[:reminder_hash]
+          end
+        end
+      end
+
+      context "#reminder" do
+        it "returns the correct reminder when body is '#{rt[:body]}'" do
+          if rt[:next_occurrence]
+            next_occ = rt[:next_occurrence]
+            expect(@slack_message.reminder.next_occurrence).to be_within(1.second).of(next_occ)
           end
         end
       end
