@@ -50,12 +50,13 @@ ActiveRecord::Schema.define(version: 20161203041122) do
 
   create_table "slack_messages", force: :cascade do |t|
     t.string   "body"
-    t.string   "message_type"
     t.string   "channel"
     t.integer  "context_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.integer  "reminder_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.index ["context_id"], name: "index_slack_messages_on_context_id", using: :btree
+    t.index ["reminder_id"], name: "index_slack_messages_on_reminder_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -70,4 +71,5 @@ ActiveRecord::Schema.define(version: 20161203041122) do
   add_foreign_key "recurrences", "reminders"
   add_foreign_key "reminders", "users"
   add_foreign_key "slack_messages", "contexts"
+  add_foreign_key "slack_messages", "reminders"
 end

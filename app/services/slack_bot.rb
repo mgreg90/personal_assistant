@@ -2,23 +2,23 @@ class SlackBot < SlackRubyBot::Bot
 
   class InternalError < StandardError; end
 
-  TEST_RESPONSE = "Alive and well!"
+  TEST_RESPONSE = "Alive and well!".freeze
 
   command 'test' do |client, data|
     client.say(channel: data.channel, text: TEST_RESPONSE)
   end
 
-  scan SlackMessage::MESSAGE_TYPE_MAP['r'][:regex] do |client, data, match|
+  scan Message::Body::REMINDER[:regex] do |client, data, match|
     current_user = User.create_or_find(data.team, data.user)
     current_context = current_user.current_or_new_context
     current_user.context = current_context
 
+    type = :reminder
     slack_message = SlackMessage.new(
-      body:           data['text'],
-      message_type:   'r',
+      body:           Message::Body.new(data['text'], type),
       channel:        data.channel
     )
-
+    binding.pry
     reminder = slack_message.reminder
 
     current_context.slack_messages << slack_message

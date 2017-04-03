@@ -14,6 +14,7 @@ class Reminder < ApplicationRecord
   has_one :context
 
   has_many :recurrences
+  has_many :slack_messages
 
   accepts_nested_attributes_for :recurrences
   accepts_nested_attributes_for :reminder_type

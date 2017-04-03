@@ -16,4 +16,9 @@ class Context < ApplicationRecord
     reminder.blank? && updated_at > CONTEXT_END_TIMEOUT
   end
 
+  def type
+    # TODO: write logic to determine a context's type
+    Reminder
+  end
+
 end
