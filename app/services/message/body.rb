@@ -25,6 +25,7 @@ module Message
     end
 
     def phrases
+      binding.pry
       # TODO:
       # builds an array of all of the phrases
       # something like [greeting, command_phrase, content_phrase, time_phrase]
@@ -33,7 +34,7 @@ module Message
       phrase_arr = []
       phrase_arr << greeting if greeting.present?
       phrase_arr << command_phrase if command_phrase.present?
-      phrase_arr << content_phrase if content_phrase.present?
+      phrase_arr << sanitized_body_phrase if sanitized_body_phrase.present?
     end
 
     def greeting
@@ -53,10 +54,11 @@ module Message
 
     def time_phrase
       # TODO: implement the whole shabang
-      ''
+      # binding.pry
+      TimePhraseParser.new(without(:greeting, :command_phrase)).parse
     end
 
-    def content_phrase
+    def sanitized_body_phrase
       without_array = []
       without_array << :greeting if greeting
       without_array << :command_phrase if command_phrase

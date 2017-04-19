@@ -18,9 +18,8 @@ class SlackBot < SlackRubyBot::Bot
       body:           Message::Body.new(data['text'], type),
       channel:        data.channel
     )
-    binding.pry
     reminder = slack_message.reminder
-
+    binding.pry
     current_context.slack_messages << slack_message
     SendReminderJob.set(wait_until: reminder.next_occurrence)
       .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
