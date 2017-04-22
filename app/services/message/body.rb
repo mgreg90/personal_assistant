@@ -20,12 +20,11 @@ module Message
     end
 
     def get_type
-      raise "Not Yet Implemented"
+      raise NotImplemented
       # should probably just do matching for the TYPES regexes
     end
 
     def phrases
-      binding.pry
       # TODO:
       # builds an array of all of the phrases
       # something like [greeting, command_phrase, content_phrase, time_phrase]
@@ -34,7 +33,9 @@ module Message
       phrase_arr = []
       phrase_arr << greeting if greeting.present?
       phrase_arr << command_phrase if command_phrase.present?
-      phrase_arr << sanitized_body_phrase if sanitized_body_phrase.present?
+      phrase_arr += sanitized_body_phrase if sanitized_body_phrase.present?
+      binding.pry
+      phrase_arr
     end
 
     def greeting
@@ -52,35 +53,39 @@ module Message
       match(regex) ? match(regex)[0] : ''
     end
 
-    def time_phrase
+    def sanitized_body_phrase
       # TODO: implement the whole shabang
-      # binding.pry
-      TimePhraseParser.new(without(:greeting, :command_phrase)).parse
+      phrases1 = TimePhraseParser.new(without(:greeting, :command_phrase)).parse
+      phrases1
     end
 
-    def sanitized_body_phrase
-      without_array = []
-      without_array << :greeting if greeting
-      without_array << :command_phrase if command_phrase
-      without_array << :time_phrase if time_phrase
-      without(*without_array)
-    end
+    # def sanitized_body_phrase
+    #   without_array = []
+    #   without_array << :greeting if greeting
+    #   without_array << :command_phrase if command_phrase
+    #   without_array << :time_phrase if time_phrase
+    #   without(*without_array)
+    # end
 
     # private
 
     def without(*args)
       string = self.dup
-      args.each do |method|
-        string.gsub!(string.send(method), '')
+      args.each do |arg|
+        if string.respond_to?(arg)
+              string.gsub!(string.send(arg), '')
+        else
+          string.gsub!(string, '')
+        end
       end
       string.clean
     end
 
     def clean
       str = self.dup # removes double spaces and leading and trailing spaces
-      while str.include?('  ') do
+      # while str.include?('  ') do
         str.gsub!('  ', ' ')
-      end
+      # end
       str.strip
     end
     # def without_greeting

@@ -1,5 +1,5 @@
 module Message
-  class PrepositionalPhrase < String
+  class PrepositionalPhrase < Body
 
     def initialize(phrase)
       super(phrase)

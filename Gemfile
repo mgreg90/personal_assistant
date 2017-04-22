@@ -38,6 +38,8 @@ gem 'celluloid-io'
 # For parsing dates and times from text
 gem 'gregorian', git: 'git://github.com/mgreg90/gregorian.git'
 
+gem 'require_all'
+
 group :development, :test do
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

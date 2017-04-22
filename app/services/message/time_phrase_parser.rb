@@ -12,15 +12,16 @@ module Message
     def parse
       phrases = []
       current_phrase = ''
-      clause_arr.each do |word|
+      clause_arr.each_with_index do |word, idx|
         if is_prep?(word)
-          phrases << clean_phrase(current_phrase)
+          phrases << objectify_phrase(current_phrase)
           current_phrase = ''
         end
-        current_phrase << "#{word} "
+        last_item = (idx == (clause_arr.size - 1))
+        word += ' ' unless last_item
+        current_phrase << word
       end
-      phrases << clean_phrase(current_phrase)
-      binding.pry
+      phrases << objectify_phrase(current_phrase)
       phrases
     end
 
@@ -36,14 +37,13 @@ module Message
       TIME_PHRASE_INDICATORS.any? { |tpi| word.match(/^#{tpi}$/i) }
     end
 
-    def clean_phrase(phrase)
+    def objectify_phrase(phrase)
       TIME_PHRASE_INDICATORS.each do |tpi|
         if phrase.strip.match(/^#{tpi}\s/i)
-          binding.pry
           return "Message::#{tpi.capitalize}Phrase".constantize.new(phrase)
         end
       end
-      phrase.strip
+      phrase
     end
 
   end

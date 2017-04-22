@@ -33,6 +33,7 @@ module PersonalAssistant
   end
 end
 
-require "ext/regexp"
-require "ext/time"
-require "ext/date"
+# require "ext/regexp"
+# require "ext/time"
+# require "ext/date"
+require_all 'lib/ext'
