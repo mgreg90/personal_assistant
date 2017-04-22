@@ -33,7 +33,7 @@ module Message
       phrase_arr = []
       phrase_arr << greeting if greeting.present?
       phrase_arr << command_phrase if command_phrase.present?
-      phrase_arr += sanitized_body_phrase if sanitized_body_phrase.present?
+      # phrase_arr += sanitized_body_phrase if sanitized_body_phrase.present?
       binding.pry
       phrase_arr
     end
@@ -53,11 +53,11 @@ module Message
       match(regex) ? match(regex)[0] : ''
     end
 
-    def sanitized_body_phrase
-      # TODO: implement the whole shabang
-      phrases1 = TimePhraseParser.new(without(:greeting, :command_phrase)).parse
-      phrases1
-    end
+    # def sanitized_body_phrase
+    #   # TODO: implement the whole shabang
+    #   phrases1 = TimePhraseParser.new(without(:greeting, :command_phrase)).parse
+    #   phrases1
+    # end
 
     # def sanitized_body_phrase
     #   without_array = []
