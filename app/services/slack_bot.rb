@@ -8,14 +8,14 @@ class SlackBot < SlackRubyBot::Bot
     client.say(channel: data.channel, text: TEST_RESPONSE)
   end
 
-  scan Message::Body::REMINDER[:regex] do |client, data, match|
+  scan Message::Phrase::Command::REMINDER do |client, data, match|
     current_user = User.create_or_find(data.team, data.user)
     current_context = current_user.current_or_new_context
     current_user.context = current_context
 
     type = :reminder
     slack_message = SlackMessage.new(
-      body:           Message::Body.new(data['text'], type),
+      body:           data['text'],
       channel:        data.channel
     )
     reminder = slack_message.reminder
