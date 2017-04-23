@@ -1,4 +1,4 @@
-class Recurrence < ApplicationRecord
+class Schedule < ApplicationRecord
   ################################################
   # ATTRIBUTES:
   # t.string      :bin_week_day
@@ -15,6 +15,6 @@ class Recurrence < ApplicationRecord
 
   belongs_to :reminder
 
-  has_many :dateless_time_ranges
+  # has_many :dateless_time_ranges
 
 end

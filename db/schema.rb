@@ -24,20 +24,6 @@ ActiveRecord::Schema.define(version: 20161203041122) do
     t.index ["user_id"], name: "index_contexts_on_user_id", using: :btree
   end
 
-  create_table "recurrences", force: :cascade do |t|
-    t.string   "bin_week_day"
-    t.integer  "frequency_code"
-    t.integer  "month_day"
-    t.string   "bin_month_week"
-    t.integer  "interval"
-    t.string   "time"
-    t.string   "timezone"
-    t.integer  "reminder_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.index ["reminder_id"], name: "index_recurrences_on_reminder_id", using: :btree
-  end
-
   create_table "reminders", force: :cascade do |t|
     t.text     "message"
     t.string   "status"
@@ -48,7 +34,24 @@ ActiveRecord::Schema.define(version: 20161203041122) do
     t.index ["user_id"], name: "index_reminders_on_user_id", using: :btree
   end
 
+  create_table "schedules", force: :cascade do |t|
+    t.datetime "next_occurrence"
+    t.string   "type"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.string   "interval"
+    t.integer  "day_of_week"
+    t.string   "week_of_month"
+    t.string   "date_of_month"
+    t.string   "timezone"
+    t.integer  "reminder_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["reminder_id"], name: "index_schedules_on_reminder_id", using: :btree
+  end
+
   create_table "slack_messages", force: :cascade do |t|
+    t.string   "timezone"
     t.string   "body"
     t.string   "channel"
     t.integer  "context_id"
@@ -68,8 +71,8 @@ ActiveRecord::Schema.define(version: 20161203041122) do
 
   add_foreign_key "contexts", "reminders"
   add_foreign_key "contexts", "users"
-  add_foreign_key "recurrences", "reminders"
   add_foreign_key "reminders", "users"
+  add_foreign_key "schedules", "reminders"
   add_foreign_key "slack_messages", "contexts"
   add_foreign_key "slack_messages", "reminders"
 end

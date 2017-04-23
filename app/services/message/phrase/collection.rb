@@ -4,8 +4,9 @@ module Message
 
       attr_reader :message, :greeting, :command
 
-      def initialize(message)
+      def initialize(message, options={})
         @message = message
+        @timezone = options[:timezone] # if message.respond_to?(:timezone)
         super([greeting, command, body, time])
       end
 
@@ -23,7 +24,11 @@ module Message
       def time
         @time ||= begin
           cleaned_message = message.sub(greeting , '').sub(command, '').strip
-          Phrase::Time.new(cleaned_message)
+          if @timezone
+            Phrase::Time.new(cleaned_message, timezone: @timezone)
+          else
+            Phrase::Time.new(cleaned_message)
+          end
         end
       end
 

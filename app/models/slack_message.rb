@@ -18,11 +18,11 @@ class SlackMessage < ApplicationRecord
   belongs_to :reminder, optional: true
 
   def body
-    Message::Body.new(super)
+    Message::Body.new(super, timezone: timezone)
   end
 
   def body=(body)
-    Message::Body.new(super(body))
+    Message::Body.new(super(body), timezone: timezone)
   end
 
   def greeting

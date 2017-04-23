@@ -12,10 +12,11 @@ class SlackBot < SlackRubyBot::Bot
     current_user = User.create_or_find(data.team, data.user)
     current_context = current_user.current_or_new_context
     current_user.context = current_context
-
-    type = :reminder
+    timezone = client.store.users[data.user].tz
+    # type = :reminder
     slack_message = SlackMessage.new(
       body:           data['text'],
+      timezone:       timezone,
       channel:        data.channel
     )
     reminder = slack_message.reminder

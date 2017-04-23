@@ -3,12 +3,13 @@ module Message
 
     attr_reader :phrases
 
-    def initialize(string)
+    def initialize(string, options={})
+      @timezone = options[:timezone]
       super(string)
     end
 
     def phrases
-      @phrases ||= Phrase::Collection.new(self)
+      @phrases ||= Phrase::Collection.new(to_s, timezone: @timezone)
     end
 
     def greeting_phrase
