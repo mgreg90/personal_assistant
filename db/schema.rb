@@ -27,7 +27,6 @@ ActiveRecord::Schema.define(version: 20161203041122) do
   create_table "reminders", force: :cascade do |t|
     t.text     "message"
     t.string   "status"
-    t.datetime "occurrence"
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -36,7 +35,7 @@ ActiveRecord::Schema.define(version: 20161203041122) do
 
   create_table "schedules", force: :cascade do |t|
     t.datetime "next_occurrence"
-    t.string   "type"
+    t.string   "schedule_type"
     t.datetime "start_time"
     t.datetime "end_time"
     t.string   "interval"

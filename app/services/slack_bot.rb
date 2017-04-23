@@ -15,11 +15,17 @@ class SlackBot < SlackRubyBot::Bot
     timezone = client.store.users[data.user].tz
     # type = :reminder
     slack_message = SlackMessage.new(
-      body:           data['text'],
       timezone:       timezone,
+      body:           data['text'],
       channel:        data.channel
     )
-    reminder = slack_message.reminder
+    reminder = Reminder.new(
+      message: slack_message.body.body_phrase,
+      status: 'A',
+      user: current_user,
+      schedules: slack_message.body.time_phrase.occurrences.map { |occ| Schedule.new(occ) }
+    )
+    # reminder = slack_message.reminder
     binding.pry
     current_context.slack_messages << slack_message
     SendReminderJob.set(wait_until: reminder.next_occurrence)

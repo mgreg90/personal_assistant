@@ -6,7 +6,7 @@ module Message
 
       def initialize(string, options={})
         @string = string
-        @timezone = options[:timezone] || Time.zone
+        @timezone = options[:timezone] || ::Time.zone
         @parsed = Schedify.parse(string, ::Time.now.in_time_zone(timezone))
         @occurrences = @parsed.occurrences
         @time_string = get_time_string

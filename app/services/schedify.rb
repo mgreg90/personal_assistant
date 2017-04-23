@@ -16,11 +16,12 @@ class Schedify
 
   def clean_occurrence(occ)
     {
-      type:           occ[:type],
+      schedule_type:           occ[:type],
       start_time:     occ[:start_time].present? ? occ[:start_time].to_time.in_time_zone : nil,
       end_time:       occ[:end_time].present? ? occ[:end_time].to_time.in_time_zone : nil,
       interval:       occ[:interval],
       day_of_week:    occ[:day_of_week],
+      week_of_month:  occ[:week_of_month],
       date_of_month:  occ[:date_of_month],
       timezone:       @timezone,
     }

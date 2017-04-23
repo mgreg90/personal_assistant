@@ -1,7 +1,7 @@
 module Message
   class Body < String
 
-    attr_reader :phrases
+    attr_reader :phrases, :timezone
 
     def initialize(string, options={})
       @timezone = options[:timezone]
@@ -21,7 +21,7 @@ module Message
     end
 
     def body_phrase
-      phrases.find { |phrase| phrase.class == Message::Phrase::Time }
+      phrases.find { |phrase| phrase.class == Message::Phrase::Body }
     end
 
     def time_phrase
