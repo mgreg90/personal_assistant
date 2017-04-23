@@ -9,7 +9,6 @@ class Reminder < ApplicationRecord
 
 
   belongs_to :user
-  belongs_to :reminder_type
 
   has_one :context
 
@@ -17,7 +16,6 @@ class Reminder < ApplicationRecord
   has_many :slack_messages
 
   accepts_nested_attributes_for :schedules
-  accepts_nested_attributes_for :reminder_type
 
   ACTIVE_STATUS = 'A'.freeze
   WEEKLY_FREQUENCY = 'W'.freeze

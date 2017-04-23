@@ -9,25 +9,31 @@ class SlackBot < SlackRubyBot::Bot
   end
 
   scan Message::Phrase::Command::REMINDER do |client, data, match|
+
     current_user = User.create_or_find(data.team, data.user)
     current_context = current_user.current_or_new_context
-    current_user.context = current_context
+
     timezone = client.store.users[data.user].tz
-    # type = :reminder
+
     slack_message = SlackMessage.new(
       timezone:       timezone,
       body:           data['text'],
-      channel:        data.channel
+      channel:        data.channel,
+      context:        current_context
     )
     reminder = Reminder.new(
-      message: slack_message.body.body_phrase,
-      status: 'A',
-      user: current_user,
-      schedules: slack_message.body.time_phrase.occurrences.map { |occ| Schedule.new(occ) }
+      context:          current_context,
+      slack_messages:   [slack_message],
+      message:          slack_message.body.body_phrase,
+      status:           'A',
+      user:             current_user
     )
-    # reminder = slack_message.reminder
+    reminder.save!
+    slack_message.save!
+    slack_message.body.time_phrase.occurrences.map do |occ|
+      Schedule.create!(occ.merge(reminder: reminder))
+    end
     binding.pry
-    current_context.slack_messages << slack_message
     SendReminderJob.set(wait_until: reminder.next_occurrence)
       .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
 
