@@ -3,7 +3,6 @@ class Reminder < ApplicationRecord
   # ATTRIBUTES:
   # t.text        :message
   # t.string      :status
-  # t.datetime    :occurrence
   # t.references  :user, foreign_key: true
   ################################################
 

@@ -1,8 +1,8 @@
 class SlackMessage < ApplicationRecord
   ################################################
   # ATTRIBUTES:
+  # t.string      :timezone
   # t.string      :body
-  # t.string      :message_type
   # t.string      :channel
   # t.references  :context, foreign_key: true
   # t.references  :reminder, foreign_key: true

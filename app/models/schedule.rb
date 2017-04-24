@@ -4,17 +4,18 @@ class Schedule < ApplicationRecord
 
   ################################################
   # ATTRIBUTES:
-  # t.string      :bin_week_day
-  # t.integer     :frequency_code
-  # t.integer     :month_day
-  # t.string      :bin_month_week
-  # t.integer     :interval
-  # t.string      :time
-  # t.string      :timezone
-  # t.references  :reminder, foreign_key: true
+  # t.datetime        :next_occurrence
+  # t.datetime        :last_occurrence
+  # t.string          :schedule_type
+  # t.datetime        :start_time
+  # t.datetime        :end_time
+  # t.string          :interval
+  # t.integer         :day_of_week
+  # t.string          :week_of_month
+  # t.string          :date_of_month
+  # t.string          :timezone
+  # t.references      :reminder, foreign_key: true
   ################################################
-
-
 
   belongs_to :reminder
 
