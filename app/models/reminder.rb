@@ -19,8 +19,8 @@ class Reminder < ApplicationRecord
   ACTIVE_STATUS = 'A'.freeze
   INACTIVE_STATUS = 'I'.freeze
 
-  def self.next_reminder
-    joins(:schedules).select("reminders.*, schedules.next_occurrence").where("schedules.next_occurrence > ?", Time.zone.now).order("schedules.next_occurrence ASC").limit(1).first
+  def self.next_reminder(ref_time=Time.zone.now)
+    joins(:schedules).select("reminders.*, schedules.next_occurrence").where("schedules.next_occurrence > ?", ref_time).order("schedules.next_occurrence ASC").limit(1).first
   end
 
 end

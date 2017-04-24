@@ -11,8 +11,6 @@ class SlackMessage < ApplicationRecord
 
   # include MessageToReminder
 
-  class WrongType < StandardError; end
-
   belongs_to :context
   belongs_to :user, optional: true
   belongs_to :reminder, optional: true
