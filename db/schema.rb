@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20161203041122) do
 
   create_table "schedules", force: :cascade do |t|
     t.datetime "next_occurrence"
+    t.datetime "last_occurrence"
     t.string   "schedule_type"
     t.datetime "start_time"
     t.datetime "end_time"

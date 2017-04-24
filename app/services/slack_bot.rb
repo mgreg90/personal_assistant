@@ -34,7 +34,7 @@ class SlackBot < SlackRubyBot::Bot
       Schedule.create!(occ.merge(reminder: reminder))
     end
     binding.pry
-    SendReminderJob.set(wait_until: reminder.next_occurrence)
+    SendReminderJob.set(wait_until: Reminder.next_occurrence)
       .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
 
     byebug

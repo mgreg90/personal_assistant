@@ -1,4 +1,7 @@
 class Schedule < ApplicationRecord
+
+  SINGLE_TYPE = 'single'.freeze
+
   ################################################
   # ATTRIBUTES:
   # t.string      :bin_week_day
@@ -15,6 +18,23 @@ class Schedule < ApplicationRecord
 
   belongs_to :reminder
 
-  # has_many :dateless_time_ranges
+  before_save :set_next_and_last_occurrences
+
+  def find_next_occurrence(tz=Time.zone.name)
+    case schedule_type
+    when SINGLE_TYPE
+      start_time.in_time_zone(tz)
+    end
+  end
+
+  def set_next_and_last_occurrences(ref_date=Time.zone.now)
+    if next_occurrence.blank?
+      self.next_occurrence = find_next_occurrence
+    elsif next_occurrence <= ref_date
+      self.last_occurrence = next_occurrence
+      self.next_occurrence = find_next_occurrence
+    end
+  end
+
 
 end
