@@ -1,5 +1,14 @@
 # Plan
 
+We need to rebuild reminder job handling.
+
+Basically, if there is any save of a reminder, we should reset what the next
+reminder job should be. (We can look at scoping by user or something later.)
+
+So we should set our reminder job on save of any reminder
+
+<!-- # Plan
+
 We need to find all the time phrases. We can sum these into four categories:
 1. every
 2. at
@@ -27,4 +36,4 @@ The reminder is saved unless validations in the reminder class (custom validator
 ## Modules Implied
 1. TimePhraseUtils (stripping time info)
 
-I'm thinking they can just be service classes since they will really only be used once - during parsing a message into a reminder hash.
+I'm thinking they can just be service classes since they will really only be used once - during parsing a message into a reminder hash. -->

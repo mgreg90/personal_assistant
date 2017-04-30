@@ -15,29 +15,23 @@ class SlackBot < SlackRubyBot::Bot
 
     timezone = client.store.users[data.user].tz
 
-    slack_message = SlackMessage.new(
+    slack_message = SlackMessage.create!(
       timezone:       timezone,
       body:           data['text'],
       channel:        data.channel,
       context:        current_context
     )
-    reminder = Reminder.new(
-      context:          current_context,
-      slack_messages:   [slack_message],
-      message:          slack_message.body.body_phrase,
-      status:           'A',
-      user:             current_user
-    )
-    reminder.save!
-    slack_message.save!
-    slack_message.body.time_phrase.occurrences.map do |occ|
-      Schedule.create!(occ.merge(reminder: reminder))
+    ApplicationRecord.transaction do
+      schedules = slack_message.body.time_phrase.to_schedules.map { |sched| Schedule.new(sched) }
+      reminder = Reminder.create!(
+        context:              current_context,
+        slack_messages:       [slack_message],
+        message:              slack_message.body.body_phrase,
+        status:               'A',
+        user:                 current_user,
+        schedules:            schedules
+      )
     end
-    binding.pry
-    SendReminderJob.set(wait_until: Reminder.next_occurrence)
-      .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
-
-    byebug
 
     if ENV['RAILS_ENV'] == "development"
       client.say(channel: data.channel, text: "development\nTime: #{Time.now}")

@@ -2,21 +2,21 @@ class Schedify
 
   attr_reader :occurrences, :message, :timezone, :nickel
 
-  def self.parse(string, current_time=Time.zone.now)
-    new(string, current_time)
+  def self.parse(message, current_time=Time.zone.now)
+    new(message, current_time)
   end
 
-  def initialize(string, current_time)
+  def initialize(message, current_time)
     @timezone = current_time.zone || Time.zone.name
-    @nickel = Nickel.parse(string, current_time)
+    @nickel = Nickel.parse(message, current_time)
     @message = @nickel.message
-    @occurrences = @nickel.occurrences.map { |occ| clean_occurrence(occ)}
+    @occurrences = @nickel.occurrences.map { |occ| to_schedule_hash(occ)}
     self
   end
 
-  def clean_occurrence(occ)
+  def to_schedule_hash(occ)
     {
-      schedule_type:           occ[:type],
+      schedule_type:  occ[:type],
       start_time:     occ[:start_time].present? ? occ[:start_time].to_time.in_time_zone : nil,
       end_time:       occ[:end_time].present? ? occ[:end_time].to_time.in_time_zone : nil,
       interval:       occ[:interval],

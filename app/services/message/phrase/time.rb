@@ -15,6 +15,10 @@ module Message
         super(string.sub(message, '').strip)
       end
 
+      def to_schedules
+        @parsed.occurrences
+      end
+
       private
 
       def get_time_string

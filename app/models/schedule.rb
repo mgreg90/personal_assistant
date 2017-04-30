@@ -17,14 +17,18 @@ class Schedule < ApplicationRecord
   # t.references      :reminder, foreign_key: true
   ################################################
 
-  belongs_to :reminder
+  belongs_to :reminder, optional: true
 
   before_save :set_next_and_last_occurrences
+  # before_save :set_job
 
   def find_next_occurrence(tz=Time.zone.name)
     case schedule_type
     when SINGLE_TYPE
       start_time.in_time_zone(tz)
+    else
+      # TODO expand for different types
+      raise NotImplemented, "This schedule type isn't handled yet!"
     end
   end
 
@@ -37,5 +41,12 @@ class Schedule < ApplicationRecord
     end
   end
 
+  # def set_job
+  #   if reminder
+  #     Reminder.set_reminder_job
+  #     return true
+  #   end
+  #   false
+  # end
 
 end
