@@ -3,7 +3,6 @@ class CreateReminders < ActiveRecord::Migration[5.0]
     create_table :reminders do |t|
       t.text        :message
       t.string      :status
-      t.datetime    :occurrence
       t.references  :user, foreign_key: true
 
       t.timestamps

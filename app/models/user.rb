@@ -1,7 +1,12 @@
 class User < ApplicationRecord
+  ################################################
+  # ATTRIBUTES:
+  # t.string      :slack_user_id
+  # t.string      :slack_team_id
+  ################################################
 
   has_one :context
-  has_many :slack_messages, :through => :contexts
+  has_many :slack_messages, :through => :context
 
   has_many :reminders
 

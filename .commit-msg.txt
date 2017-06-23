@@ -1,2 +1,3 @@
-Added pry gems.
-Added and passed more tests.
+Added pry-nav gem for debugging.
+Started new phrase-based flow.
+Work in progress. Still prys in code 'n everything.
