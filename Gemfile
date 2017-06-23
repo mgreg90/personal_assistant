@@ -7,7 +7,7 @@ gem 'humanize'
 gem 'dotenv-rails', :require => 'dotenv/rails-now'
 
 # For parsing time from messages
-gem 'chronic'
+gem 'nickel'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
@@ -35,8 +35,7 @@ gem 'rails-erd'
 gem 'slack-ruby-bot'
 gem 'celluloid-io'
 
-# For parsing dates and times from text
-gem 'gregorian', git: 'git://github.com/mgreg90/gregorian.git'
+gem 'require_all'
 
 group :development, :test do
 
@@ -44,11 +43,13 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'pry'
   gem 'pry-rails'
+  gem 'pry-nav'
 
   gem 'awesome_print', require:"ap"
 
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'forgery'
   gem 'timecop'
 end
 

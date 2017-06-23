@@ -2,30 +2,36 @@ class SlackBot < SlackRubyBot::Bot
 
   class InternalError < StandardError; end
 
-  TEST_RESPONSE = "Alive and well!"
+  TEST_RESPONSE = "Alive and well!".freeze
 
   command 'test' do |client, data|
     client.say(channel: data.channel, text: TEST_RESPONSE)
   end
 
-  scan SlackMessage::MESSAGE_TYPE_MAP['r'][:regex] do |client, data, match|
+  scan Message::Phrase::Command::REMINDER do |client, data, match|
+
     current_user = User.create_or_find(data.team, data.user)
     current_context = current_user.current_or_new_context
-    current_user.context = current_context
 
-    slack_message = SlackMessage.new(
+    timezone = client.store.users[data.user].tz
+
+    slack_message = SlackMessage.create!(
+      timezone:       timezone,
       body:           data['text'],
-      message_type:   'r',
-      channel:        data.channel
+      channel:        data.channel,
+      context:        current_context
     )
-
-    reminder = slack_message.reminder
-
-    current_context.slack_messages << slack_message
-    SendReminderJob.set(wait_until: reminder.next_occurrence)
-      .perform_later(ReminderPresenter.new(reminder, channel: slack_message.channel).to_h)
-
-    byebug
+    ApplicationRecord.transaction do
+      schedules = slack_message.body.time_phrase.to_schedules.map { |sched| Schedule.new(sched) }
+      reminder = Reminder.create!(
+        context:              current_context,
+        slack_messages:       [slack_message],
+        message:              slack_message.body.body_phrase,
+        status:               'A',
+        user:                 current_user,
+        schedules:            schedules
+      )
+    end
 
     if ENV['RAILS_ENV'] == "development"
       client.say(channel: data.channel, text: "development\nTime: #{Time.now}")
