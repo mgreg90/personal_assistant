@@ -46,8 +46,4 @@ class ReminderPresenter
     reminder.message.gsub(/my/i, 'your').capitalize
   end
 
-  def slack?
-    [:slack, 'slack'].include?(type)
-  end
-
 end

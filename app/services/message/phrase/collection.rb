@@ -24,6 +24,7 @@ module Message
       def time
         @time ||= begin
           cleaned_message = message.sub(greeting , '').sub(command, '').strip
+          binding.pry
           if @timezone
             Phrase::Time.new(cleaned_message, timezone: @timezone)
           else
