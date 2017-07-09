@@ -9,12 +9,12 @@ class SlackBot < SlackRubyBot::Bot
   end
 
   scan Message::Phrase::Command::REMINDER do |client, data, match|
-
+    
     current_user = User.create_or_find(data.team, data.user)
     current_context = current_user.current_or_new_context
-
+    
     timezone = client.store.users[data.user].tz
-
+    
     slack_message = SlackMessage.create!(
       timezone:       timezone,
       body:           data['text'],
@@ -32,12 +32,13 @@ class SlackBot < SlackRubyBot::Bot
         schedules:            schedules
       )
     end
-
+    
     if ENV['RAILS_ENV'] == "development"
       client.say(channel: data.channel, text: "development\nTime: #{Time.now}")
     else
       client.say(channel: data.channel, text: "you got it!\nTime: #{Time.now}")
     end
+    
   end
 
   command 'ping' do |client, data, _|

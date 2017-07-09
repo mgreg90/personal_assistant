@@ -2,7 +2,8 @@ class Schedify
 
   attr_reader :timezone, :nickel, :body
 
-  VALID_AT_TIME_PHRASE = /^at\s(?<hour>((1[012])|(0?\d)))(:(?<min>[6543210]\d))?(\s)?(?<meridian>(a.?m.?)|(p.?m.?))$/i
+  VALID_AT_TIME_PHRASE = /^at\s(?<hour>((1[012])|(0?\d)))(:(?<min>[6543210]\d))?(\s)?(?<meridian>(a.?m.?)|(p.?m.?))$/i.freeze
+  DATE_FORMAT = '%Y%m%d'.freeze
 
   def self.parse(body, current_time=Time.zone.now)
     new(body, current_time)
@@ -14,18 +15,30 @@ class Schedify
     @nickel = nickel_parse(current_time)#Nickel.parse(body, current_time)
     self
   end
+  
+  def timezone_offset
+    tzo = ((Time.now.utc_offset / 3600.0 * 100).to_i.to_s).to_s
+    tzo.length == 5 ? tzo.insert(1, '0') : tzo
+  end
 
   def to_schedule_hash(occ)
     {
       schedule_type:  occ[:type],
-      start_time:     occ[:start_time].present? ? occ[:start_time].to_time.in_time_zone : nil,
-      end_time:       occ[:end_time].present? ? occ[:end_time].to_time.in_time_zone : nil,
+      start_time:     occ[:start_time].present? ? build_time_from_nickel_occurrence(occ, :start) : nil,
+      end_time:       occ[:end_time].present? ? build_time_from_nickel_occurrence(occ, :end) : nil,
       interval:       occ[:interval],
       day_of_week:    occ[:day_of_week],
       week_of_month:  occ[:week_of_month],
       date_of_month:  occ[:date_of_month],
       timezone:       @timezone,
     }
+  end
+  
+  def build_time_from_nickel_occurrence(occurrence, type)
+    date = Date.strptime(occurrence.send("#{type}_date").date, DATE_FORMAT)
+    time_str = occurrence.send("#{type}_time").time
+    time = { second: time_str[-2..-1].to_i, minute: time_str[-4..-3].to_i, hour: time_str[-6..-5].to_i }
+    DateTime.new(date.year, date.month, date.day, time[:hour], time[:minute], time[:second], timezone_offset)
   end
 
   def occurrences
@@ -46,8 +59,7 @@ class Schedify
     # NOTE: so far that means "at 10 AM" needs a "today" or "tomorrow" or something
     if parsed.occurrences.empty? && set_time_str(parsed).present?
       # loop thru words
-      # binding.pry
-      if valid_time_string?
+        if valid_time_string?
       # regex for valid clock times
         # Possible MissingAttributes
           # meridian

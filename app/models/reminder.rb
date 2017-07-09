@@ -38,6 +38,10 @@ class Reminder < ApplicationRecord
     # TODO: Test this!
     schedules.sort { |sched1, sched2| sched1.next_occurrence <=> sched2.next_occurrence }.first
   end
+  
+  def next_occurrence
+    next_schedule.next_occurrence
+  end
 
   def set_reminder_job
     self.class.set_reminder_job

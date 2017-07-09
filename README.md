@@ -11,8 +11,8 @@ You can get vera's attention either by inviting her into a channel (she will alw
 Vera can handle your reminders! Just ask!
 
 ```
-vera remind me to get a haircut in 5 minutes
-vera remind me to get a haircut in 2 days at 1 pm
+:white_check_mark: vera remind me to get a haircut in 5 minutes
+:white_check_mark: vera remind me to get a haircut in 2 days at 1 pm
 vera remind me to get a haircut at 5 pm
 vera remind me to get a haircut at 5:10 pm
 remind me that tom cheats every time at poker every saturday at 1 am

@@ -1,3 +1,5 @@
-Added pry-nav gem for debugging.
-Started new phrase-based flow.
-Work in progress. Still prys in code 'n everything.
+Listed functioning types in README.
+Added Reminder#next_occurrence for convenience.
+Removed prys.
+Improved Schedify for relative time, later date case.
+Commented failing tests for later attention.
