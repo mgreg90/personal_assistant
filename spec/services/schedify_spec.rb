@@ -7,75 +7,117 @@ describe Schedify do
       end
       context 'WHEN right now is 12:00 PM May 10, 2017' do
         let(:now) {Time.zone.parse('2017-05-10 12:00:00')}
+        
+        context "WHEN body uses relative time (in x minutes/days/etc)" do
+          context 'WHEN body is "do this in 5 minutes"' do
+            let(:correct_date) {now.change(min: (now.min + 5))}
+            let(:occurrences) {Schedify.parse("do this in 5 minutes").occurrences}
+            
+            it "returns one occurrence" do
+              expect(occurrences.length).to eq(1)
+            end
 
-        context 'WHEN body is "do this today at 10pm"' do
-          let(:correct_date) {now.change(hour: 22)}
-          let(:occurrences) {Schedify.parse("do this today at 10pm").nickel.occurrences}
+            it "returns an occurrence of type = single" do
+              expect(occurrences.first[:type]).to eq(:single)
+            end
+            
+            it "returns a start time of May 10, 2017 10:05PM EDT" do
+              binding.pry
+              expect(occurrences.first[:start_time]).to eq(correct_date)
+            end
 
-          it "returns one occurrence" do
-            expect(occurrences.length).to eq(1)
           end
-
-          it "returns an occurrence of type = single" do
-            expect(occurrences.first[:type]).to eq(:single)
+        end
+        context "WHEN body uses absolute time (in at 10pm/on wednesday at 2am)" do
+          context 'WHEN body is "do this today at 10pm"' do
+            let(:correct_date) {now.change(hour: 22)}
+            let(:occurrences) {Schedify.parse("do this today at 10pm").nickel.occurrences}
+            
+            it "returns one occurrence" do
+              expect(occurrences.length).to eq(1)
+            end
+            
+            it "returns an occurrence of type = single" do
+              expect(occurrences.first[:type]).to eq(:single)
+            end
+            
+            it "returns a start time of May 10, 2017 10:00PM EDT" do
+              # binding.pry
+              expect(occurrences.first[:start_time]).to eq(correct_date)
+            end
+            
           end
+          context 'WHEN body is "do this today at 10pm"' do
+            let(:correct_date) {now.change(hour: 22)}
+            let(:occurrences) {Schedify.parse("do this today at 10pm").nickel.occurrences}
 
-          it "returns a start time of May 10, 2017 10:00PM EDT" do
-            expect(occurrences.first[:start_time]).to eq(correct_date)
+            it "returns one occurrence" do
+              expect(occurrences.length).to eq(1)
+            end
+
+            it "returns an occurrence of type = single" do
+              expect(occurrences.first[:type]).to eq(:single)
+            end
+
+            it "returns a start time of May 10, 2017 10:00PM EDT" do
+              expect(occurrences.first[:start_time]).to eq(correct_date)
+            end
+
+          end
+          context 'WHEN body is "do this at 10pm"' do
+            let(:correct_date) {now.change(hour: 22)}
+            let(:occurrences) {Schedify.parse("do this at 10pm").nickel.occurrences}
+          
+            it "returns one occurrence" do
+              expect(occurrences.length).to eq(1)
+            end
+          
+            it "returns an occurrence of type = single" do
+              expect(occurrences.first[:type]).to eq(:single)
+            end
+          
+            it "returns a start time of May 10, 2017 10:00PM EDT" do
+              expect(occurrences.first[:start_time]).to eq(correct_date)
+            end
+          
+          end
+          context 'WHEN body is "do this tomorrow at 10am"' do
+            let(:correct_date) {now.change(day: 11, hour: 10)}
+            let(:occurrences) {Schedify.parse("do this tomorrow at 10am").nickel.occurrences}
+
+            it "returns one occurrence" do
+              expect(occurrences.length).to eq(1)
+            end
+
+            it "returns an occurrence of type = single" do
+              expect(occurrences.first[:type]).to eq(:single)
+            end
+
+            it "returns a start time of May 11, 2017 10:00AM EDT" do
+              expect(occurrences.first[:start_time]).to eq(correct_date)
+            end
+
+          end
+          context 'WHEN body is "do this at 10am"' do
+            let(:correct_date) {now.change(day: 11, hour: 10)}
+            let(:occurrences) {Schedify.parse("do this at 10am").nickel.occurrences}
+          
+            it "returns one occurrence" do
+              expect(occurrences.length).to eq(1)
+            end
+          
+            it "returns an occurrence of type = single" do
+              expect(occurrences.first[:type]).to eq(:single)
+            end
+          
+            it "returns a start time of May 11, 2017 10:00AM EDT" do
+              expect(occurrences.first[:start_time]).to eq(correct_date)
+            end
+          
           end
 
         end
-        # context 'WHEN body is "do this at 10pm"' do
-        #   let(:correct_date) {now.change(hour: 22)}
-        #   let(:occurrences) {Schedify.parse("do this at 10pm").nickel.occurrences}
-        # 
-        #   it "returns one occurrence" do
-        #     expect(occurrences.length).to eq(1)
-        #   end
-        # 
-        #   it "returns an occurrence of type = single" do
-        #     expect(occurrences.first[:type]).to eq(:single)
-        #   end
-        # 
-        #   it "returns a start time of May 10, 2017 10:00PM EDT" do
-        #     expect(occurrences.first[:start_time]).to eq(correct_date)
-        #   end
-        # 
-        # end
-        context 'WHEN body is "do this tomorrow at 10am"' do
-          let(:correct_date) {now.change(day: 11, hour: 10)}
-          let(:occurrences) {Schedify.parse("do this tomorrow at 10am").nickel.occurrences}
 
-          it "returns one occurrence" do
-            expect(occurrences.length).to eq(1)
-          end
-
-          it "returns an occurrence of type = single" do
-            expect(occurrences.first[:type]).to eq(:single)
-          end
-
-          it "returns a start time of May 11, 2017 10:00AM EDT" do
-            expect(occurrences.first[:start_time]).to eq(correct_date)
-          end
-
-        end
-        # context 'WHEN body is "do this at 10am"' do
-        #   let(:correct_date) {now.change(day: 11, hour: 10)}
-        #   let(:occurrences) {Schedify.parse("do this at 10am").nickel.occurrences}
-        # 
-        #   it "returns one occurrence" do
-        #     expect(occurrences.length).to eq(1)
-        #   end
-        # 
-        #   it "returns an occurrence of type = single" do
-        #     expect(occurrences.first[:type]).to eq(:single)
-        #   end
-        # 
-        #   it "returns a start time of May 11, 2017 10:00AM EDT" do
-        #     expect(occurrences.first[:start_time]).to eq(correct_date)
-        #   end
-        # 
-        # end
       end
     end
   end

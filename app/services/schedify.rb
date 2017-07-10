@@ -12,7 +12,7 @@ class Schedify
   def initialize(body, current_time)
     @timezone = current_time.zone || Time.zone.name
     @body = body
-    @nickel = nickel_parse(current_time)#Nickel.parse(body, current_time)
+    @nickel = nickel_parse(current_time)
     self
   end
   
@@ -22,6 +22,7 @@ class Schedify
   end
 
   def to_schedule_hash(occ)
+    binding.pry
     {
       schedule_type:  occ[:type],
       start_time:     occ[:start_time].present? ? build_time_from_nickel_occurrence(occ, :start) : nil,
@@ -35,6 +36,7 @@ class Schedify
   end
   
   def build_time_from_nickel_occurrence(occurrence, type)
+    binding.pry
     date = Date.strptime(occurrence.send("#{type}_date").date, DATE_FORMAT)
     time_str = occurrence.send("#{type}_time").time
     time = { second: time_str[-2..-1].to_i, minute: time_str[-4..-3].to_i, hour: time_str[-6..-5].to_i }
@@ -60,6 +62,8 @@ class Schedify
     if parsed.occurrences.empty? && set_time_str(parsed).present?
       # loop thru words
         if valid_time_string?
+          # binding.pry
+          parsed = Nickel.parse("#{body} today", current_time)
       # regex for valid clock times
         # Possible MissingAttributes
           # meridian
@@ -91,7 +95,7 @@ class Schedify
   def valid_time_string?
     # build only for at_phrase so far
     ts_match = time_str.match(VALID_AT_TIME_PHRASE)
-    return true if ts_match[:hour].present? && ts_match[:meridian].present?
+    return true if ts_match && ts_match[:hour].present? && ts_match[:meridian].present?
     false
   end
 
